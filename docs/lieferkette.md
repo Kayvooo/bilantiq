@@ -17,8 +17,10 @@ Die folgenden älteren Ergebnisse sind historische Momentaufnahmen. Aktuell gilt
   Release-/Artefaktsignierung. Neue Scanner ersetzen weder Quellcodeprüfung noch einen vollständigen Restore.
 
 Der erste Lauf für `8fb9c4b` bestand bei Python-/npm-Audit, Backend-Suiten und beiden Compose-Profilen. Die neuen
-Image-Schranken stoppten korrekt bei High-/Critical-Befunden. Die Basisimages und betroffenen Bibliotheken werden
-gezielt aktualisiert; Architektur und Abnahme stehen in `specs/security-images.md`. Es gibt keine pauschalen Ausnahmen.
+Image-Schranken stoppten korrekt bei High-/Critical-Befunden. Nach den gezielten Updates in `d2608032` bestehen die
+Regressionstests, beide Compose-Profile, native Bild-/PDF-/OCR-Verarbeitung und der Frontend-Image-Scan. Im Backend
+bleiben 80 Debian-Paketmeldungen zu 29 CVEs offen; der Job bleibt rot. Architektur und Abnahme stehen in
+`specs/security-images.md`, sämtliche CVE-IDs und Maßnahmen in `security-image-befunde.md`. Es gibt keine pauschalen Ausnahmen.
 Die früheren Angaben „nicht blockierend“ unten beschreiben ausschließlich den alten Stand.
 
 Stand: 2026-10-14, Branch `release/abhaengigkeiten`. Frühere Release-Planung, nicht mehr im Repository.
