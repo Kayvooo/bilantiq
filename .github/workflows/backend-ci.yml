@@ -1,0 +1,153 @@
+name: backend-ci
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: sqlite:///./ci_bilantiq.db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements-dev.txt
+      # Generated fresh per run, never stored: these only ever protect a throwaway
+      # SQLite file that is deleted with the runner. See coderegeln.md — no secret,
+      # not even a dummy one, gets checked into the repo.
+      - name: Generate ephemeral test secrets
+        run: |
+          echo "JWT_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> "$GITHUB_ENV"
+          echo "FIELD_ENCRYPTION_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')" >> "$GITHUB_ENV"
+          echo "EMAIL_LOOKUP_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> "$GITHUB_ENV"
+          echo "BLIND_INDEX_SECRET=$(python -c 'import secrets; print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+          echo "DATA_ENCRYPTION_KEYS=v1:$(python -c 'import base64,secrets; print(base64.urlsafe_b64encode(secrets.token_bytes(32)).decode().rstrip("="))')" >> "$GITHUB_ENV"
+          echo "DATA_ENCRYPTION_ACTIVE_KID=v1" >> "$GITHUB_ENV"
+      - run: pytest -q
+
+  # Mandantentrennung (Row Level Security) laesst sich nur gegen echtes Postgres pruefen. Dieser Job bildet
+  # backend/scripts/rls_testlauf.sh nach, nur mit einem Service-Container statt eines lokalen initdb:
+  # Migrationen als Administrator einspielen, Laufzeitrolle ohne BYPASSRLS anlegen, Suite als diese Rolle fahren.
+  postgres-rls:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: bq_test
+          # Wegwerf-Container nur fuer diesen Lauf, nur im Runner erreichbar: kein Passwort noetig (und keins im Repo).
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d bq_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: "5432"
+      PGUSER: postgres
+      ADMIN_DB_URL: postgresql+psycopg://postgres@127.0.0.1:5432/bq_test
+      # Pflichtfelder ohne Default in app/config.py; Platzhalter wie in tests/conftest.py und rls_testlauf.sh,
+      # nie echte SMTP-Zugaenge. Auch `alembic upgrade head` laedt die Settings und braucht sie.
+      SMTP_HOST: smtp.test.invalid
+      SMTP_USER: tests@example.invalid
+      SMTP_PASSWORD: test-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements-dev.txt
+      - name: Generate ephemeral test secrets
+        run: |
+          echo "JWT_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> "$GITHUB_ENV"
+          echo "FIELD_ENCRYPTION_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')" >> "$GITHUB_ENV"
+          echo "EMAIL_LOOKUP_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> "$GITHUB_ENV"
+          echo "BLIND_INDEX_SECRET=$(python -c 'import secrets; print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+          echo "DATA_ENCRYPTION_KEYS=v1:$(python -c 'import base64,secrets; print(base64.urlsafe_b64encode(secrets.token_bytes(32)).decode().rstrip("="))')" >> "$GITHUB_ENV"
+          echo "DATA_ENCRYPTION_ACTIVE_KID=v1" >> "$GITHUB_ENV"
+          echo "RUNTIME_ROLE_PASSWORD=$(python -c 'import secrets; print(secrets.token_hex(16))')" >> "$GITHUB_ENV"
+      - name: Migrationen als Administrator einspielen
+        run: DATABASE_URL="$ADMIN_DB_URL" alembic upgrade head
+      - name: Laufzeitrolle ohne BYPASSRLS anlegen
+        run: >-
+          psql -q -d bq_test -v rolle=bilantiq_runtime -v passwort="'${RUNTIME_ROLE_PASSWORD}'"
+          -f scripts/runtime_rolle.sql
+      - name: Testsuite als Laufzeitrolle (RLS aktiv)
+        env:
+          TEST_DATABASE_ADMIN_URL: ${{ env.ADMIN_DB_URL }}
+        run: |
+          export DATABASE_URL="postgresql+psycopg://bilantiq_runtime:${RUNTIME_ROLE_PASSWORD}@127.0.0.1:5432/bq_test"
+          pytest -q -p no:cacheprovider
+
+  # XRechnung gegen die Regeln der KoSIT-Konfiguration pruefen (XSD plus Schematron, ausgefuehrt mit lxml und Saxon,
+  # nicht mit dem Java-Validator). Die Regeln liegen nicht im Repository: scripts/kosit_regeln_holen.py holt sie
+  # per git von den in kosit_regeln_pins.json festgeschriebenen Commits und bricht bei jedem abweichenden Hash ab.
+  # Der Job wuerde ohne Regeln nur ueberspringen, deshalb prueft der erste Schritt nach dem Holen, dass sie da sind.
+  xrechnung-validierung:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: sqlite:///./ci_bilantiq_xr.db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements-dev.txt
+      - name: Generate ephemeral test secrets
+        run: |
+          echo "JWT_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> "$GITHUB_ENV"
+          echo "FIELD_ENCRYPTION_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')" >> "$GITHUB_ENV"
+          echo "EMAIL_LOOKUP_SECRET=$(python -c 'import secrets; print(secrets.token_hex(32))')" >> "$GITHUB_ENV"
+          echo "BLIND_INDEX_SECRET=$(python -c 'import secrets; print(secrets.token_urlsafe(48))')" >> "$GITHUB_ENV"
+          echo "DATA_ENCRYPTION_KEYS=v1:$(python -c 'import base64,secrets; print(base64.urlsafe_b64encode(secrets.token_bytes(32)).decode().rstrip("="))')" >> "$GITHUB_ENV"
+          echo "DATA_ENCRYPTION_ACTIVE_KID=v1" >> "$GITHUB_ENV"
+      - name: KoSIT-Regeln holen (feste Commits, Hash-Pruefung)
+        run: python scripts/kosit_regeln_holen.py
+      - name: Regeln sind vollstaendig vorhanden
+        run: test -f .kosit-regeln/manifest.json && cat .kosit-regeln/manifest.json | head -c 1500
+      - name: XRechnung-Validierung und Generator-Tests
+        run: >-
+          pytest -q -p no:cacheprovider -rs
+          tests/test_e_invoice_validation.py
+          tests/test_xrechnung_generator.py
+          tests/test_xrechnung_pruefung_api.py
+          tests/test_e_rechnung_beispielinstanzen.py
+          tests/test_e_rechnung.py
+
+  # Rein informativ (blockiert nie): zeigt bekannte Schwachstellen in den gepinnten Abhaengigkeiten.
+  # Bewertung und Behebung stehen in docs/lieferkette.md.
+  pip-audit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install pip-audit==2.10.1
+      - name: pip-audit (nicht blockierend)
+        continue-on-error: true
+        run: pip-audit -r requirements-dev.txt | tee -a "$GITHUB_STEP_SUMMARY"

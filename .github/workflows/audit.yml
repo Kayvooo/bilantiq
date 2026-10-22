@@ -1,0 +1,42 @@
+name: audit
+
+# Woechentlicher, rein informativer Abhaengigkeits-Check. Neue Schwachstellen tauchen auch dann auf,
+# wenn niemand Code aendert. Nichts hier blockiert einen Merge; Bewertung in docs/lieferkette.md.
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install pip-audit==2.10.1
+      - name: pip-audit (nicht blockierend)
+        continue-on-error: true
+        run: pip-audit -r requirements-dev.txt | tee -a "$GITHUB_STEP_SUMMARY"
+
+  npm-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projekt: [frontend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.projekt }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: npm audit (nicht blockierend)
+        continue-on-error: true
+        run: npm audit --audit-level=high | tee -a "$GITHUB_STEP_SUMMARY"

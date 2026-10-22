@@ -1,0 +1,60 @@
+{
+  "brand": {
+    "forest": "#143D2B",
+    "lime": "#D8F36A",
+    "paper": "#F7F8F2",
+    "ink": "#18251D",
+    "white": "#FFFFFF",
+    "muted": "#526258",
+    "line": "#DDE3D9",
+    "border": "#7B8B7F",
+    "hover": "#0D2D1E",
+    "pressed": "#082216",
+    "success": "#246443",
+    "success_bg": "#EAF5EC",
+    "warning": "#835000",
+    "warning_bg": "#FFF4DC",
+    "error": "#B23838",
+    "error_bg": "#FFF0EE",
+    "info": "#245CA6",
+    "info_bg": "#EDF3FF",
+    "focus": "#245CA6"
+  },
+  "typography": {
+    "display": "Manrope",
+    "body": "IBM Plex Sans",
+    "wordmark_weight": 650,
+    "weights": {
+      "display": 700,
+      "body": 400,
+      "label": 600
+    }
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96
+  ],
+  "radius": {
+    "control": 10,
+    "card": 16,
+    "brand_panel": 24
+  },
+  "motion": {
+    "fast_ms": 140,
+    "panel_ms": 220
+  },
+  "layout": {
+    "max_content_px": 1200,
+    "desktop_columns": 12,
+    "gutter_px": 24,
+    "mobile_columns": 4,
+    "mobile_margin_px": 20
+  }
+}

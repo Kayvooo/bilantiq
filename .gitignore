@@ -1,0 +1,31 @@
+# Python
+backend/.venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.db
+backend/.env
+backend/data/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Produktions-Secrets (nie committen; .env.prod.example ist die Vorlage)
+.env.prod
+
+# OS
+.DS_Store
+
+# Weitere Umgebungsdateien (nur *.example gehoeren ins Repo)
+.env
+.env.*
+!.env.*.example
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# XRechnung-Pruefregeln (per scripts/kosit_regeln_holen.py geholt, nie einchecken)
+backend/.kosit-regeln/
+backend/.kosit-regeln.*

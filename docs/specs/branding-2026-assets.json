@@ -1,0 +1,1219 @@
+{
+  "source_archive": "Bilantiq_Brandpaket_2026.zip",
+  "archive_sha256": "a5e51a9b5828089482be12a0ae5f184e6f08ea14dcc941196f21c34345c0eb2f",
+  "repository_base": "ecbf3edde43395a3e60c85ae1c4dcca5a2255f9c",
+  "checks": {
+    "zip_crc": "passed",
+    "manifest_199_entries": "passed; excludes itself",
+    "all_26_pdf_pages": "rendered and visually reviewed as contact sheets",
+    "all_107_pngs_and_ico": "decoded",
+    "all_76_svgs": "parsed; no script or foreignObject",
+    "font_files_and_OFL": "identical to existing local fonts/licenses",
+    "all_34_logo_source_duplicates": "byte-identical to exports",
+    "CSS_JSON_CSV": "consistent",
+    "all_8_contrasts": "independently recalculated; within 0.001",
+    "generator": "syntax checked; not executed"
+  },
+  "assets": [
+    {
+      "path": "01_Brandguide/Bilantiq_Brandguide_2026.pdf",
+      "bytes": 107871,
+      "sha256": "b60a1b7d08e88df082d8bebc881d59db11b729e805b7c5ffe007e8f6a607f1b6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "01_Brandguide/Bilantiq_Brandguide_Text.md",
+      "bytes": 17636,
+      "sha256": "166ffd8a0d2147fa99fd90f1b1843da113a663d16f30bf4e8d563067c57acb21",
+      "result": "read/format validated"
+    },
+    {
+      "path": "01_Brandguide/Bilantiq_Logo_Uebersicht.png",
+      "bytes": 91282,
+      "sha256": "34396dfd62f64a51d0bbc8b51b5e70e735995bfdb935ab78b2ac31592fa36467",
+      "result": "read/format validated"
+    },
+    {
+      "path": "01_Brandguide/Bilantiq_Logo_Uebersicht.svg",
+      "bytes": 81340,
+      "sha256": "250f9d7e79b165356608d9fd106f10f8c1e1aeefbd95a43db6f57abe58252616",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_limette-auf-waldgruen_1000x1000.png",
+      "bytes": 23104,
+      "sha256": "3a8aad6621919c91d746e854108712a3cf507df993553f1c88caa7c00dad911c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_limette-transparent_1000x1000.png",
+      "bytes": 20829,
+      "sha256": "36a57284e7fab004d2dccdc8df0b41a60c874bc0acabe0f61878978b7c26019c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_schwarz-transparent_1000x1000.png",
+      "bytes": 14597,
+      "sha256": "27a9d6722f5c7e93fc077d0dddf4e74e4afe4096768b9a92b055c7903a4fa954",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_waldgruen-auf-limette_1000x1000.png",
+      "bytes": 22995,
+      "sha256": "69902154eacc30e72ccb02229073060986fbe86b3d401684d989a9818cef53f8",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_waldgruen-auf-weiss_1000x1000.png",
+      "bytes": 23321,
+      "sha256": "b25a87c595351d671ba0162d146b563133977c98e50c88c56234f2c429357714",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_waldgruen-transparent_1000x1000.png",
+      "bytes": 20714,
+      "sha256": "8186ecc896769ea1ded87b2967b98d3295c2293ae875f01aa6cd2841572974e6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_weiss-auf-waldgruen_1000x1000.png",
+      "bytes": 23541,
+      "sha256": "31e5e444eeb2c6fa86a4f032a831f5315cec717d250f48daaf6e1937d02871b0",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_weiss-transparent_1000x1000.png",
+      "bytes": 16608,
+      "sha256": "fb96c407e2dd8b953180a6b631545b5c34cbf66c50de426d9ff39e09b4705f0e",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_horizontal_zweifarbig-auf-waldgruen_1000x1000.png",
+      "bytes": 23663,
+      "sha256": "7804aa4bc99db418f15da5d40cdc5ca01fa660b03704f6f7c434666611244563",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_limette-auf-waldgruen_1000x1000.png",
+      "bytes": 28503,
+      "sha256": "31f48f9c55d6bea728b0a29ed7879c54a309cfabe8cffd5f8fce427814138159",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_limette-transparent_1000x1000.png",
+      "bytes": 26604,
+      "sha256": "749c49e2994eb2e593053b9573346bebf3a08bb75bb1527d7482233dd3dfc1c3",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_schwarz-transparent_1000x1000.png",
+      "bytes": 18300,
+      "sha256": "8ad041467ef23583adc571fae44dea7acf71d59f74d851b065d0f9f6508d62ca",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_waldgruen-auf-limette_1000x1000.png",
+      "bytes": 28285,
+      "sha256": "2e40d164fed063b6dd4b435d885783c2c35067d8b4d9bbfd2aab1e9aec1febd1",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_waldgruen-auf-weiss_1000x1000.png",
+      "bytes": 28880,
+      "sha256": "74c875065a81a42bbc98d43c1ea2215af11720939f1f41a0685d7b3db4c8526d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_waldgruen-transparent_1000x1000.png",
+      "bytes": 26366,
+      "sha256": "ab06e8b564e76b041f151c45c6897e9057d7fe97603a914dce91abbda1846390",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_weiss-auf-waldgruen_1000x1000.png",
+      "bytes": 29035,
+      "sha256": "b88e067de7fc6cae2919ee68ed858a7d8856b1fabbf7c30b1b516ce27ef492bd",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_weiss-transparent_1000x1000.png",
+      "bytes": 21292,
+      "sha256": "c393a1c0e640022dfe219fdf11f24186589ae65cf26e33e4d8a307f803b8a739",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_stacked_zweifarbig-auf-waldgruen_1000x1000.png",
+      "bytes": 28809,
+      "sha256": "117ac552488245122fc75d4e2a8c7135e2d364a1f58807c87a235de99bc0d9a3",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_limette-auf-waldgruen_1000x1000.png",
+      "bytes": 27946,
+      "sha256": "a5a657bc516c71f3147d33b1929444ff9ad8d7e9b36e2f2fbbfe5f25b1dd3469",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_limette-transparent_1000x1000.png",
+      "bytes": 26509,
+      "sha256": "a812c9ef622958a23411e7630fc49acf391186111f5dec8065a689891dbd4799",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_schwarz-transparent_1000x1000.png",
+      "bytes": 19507,
+      "sha256": "a684329de18dc21ca2089e89c90d6c8a36a35bd55b56057742c46616dc2dd702",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_waldgruen-auf-limette_1000x1000.png",
+      "bytes": 27915,
+      "sha256": "44aec1c219623fc34a9e2d8a98195e37463a63e63bfeb945775f0da880be3131",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_waldgruen-auf-weiss_1000x1000.png",
+      "bytes": 28709,
+      "sha256": "a40eb4e84bd9ef964f9213c192207c1f92de3fe339ec682af67d627cf99ea6b9",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_waldgruen-transparent_1000x1000.png",
+      "bytes": 26373,
+      "sha256": "d41df2990f7071348acf7d93352d899ddde46653106cc34d922debfb1b915c3b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_weiss-auf-waldgruen_1000x1000.png",
+      "bytes": 28824,
+      "sha256": "7f4697b6b3905c3f8856675471954902c11a268f5b7d1ea2958b5f14685e07fe",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_symbol_weiss-transparent_1000x1000.png",
+      "bytes": 22466,
+      "sha256": "00ee1a2299a6fb05380cc38617b215850ae0ef8ab3580e7a74cc3aeb7f7bc1ac",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_limette-auf-waldgruen_1000x1000.png",
+      "bytes": 21177,
+      "sha256": "85b8fb7999b43c04d3808ccdd76f4f37da95f4b34cbc821e6964981f55a8f8a7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_limette-transparent_1000x1000.png",
+      "bytes": 18947,
+      "sha256": "e59779a791aa80f09a1a0a41c1b49cff571f3c0ad0a5103458fa333923ae2265",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_schwarz-transparent_1000x1000.png",
+      "bytes": 13697,
+      "sha256": "6d3e272602617df0d9ea008edd3ff89eaa14667da68b6d86ea350dffdfb08df9",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_waldgruen-auf-limette_1000x1000.png",
+      "bytes": 21033,
+      "sha256": "41c727a39809f4e40ad40f5a01723c4252c5dad129c350c82a033c1f201cf96f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_waldgruen-auf-weiss_1000x1000.png",
+      "bytes": 21423,
+      "sha256": "7ede29ad74cd3da1df783192c1c1ae1d7e04fb01d38e3fd852818a51742a48be",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_waldgruen-transparent_1000x1000.png",
+      "bytes": 18796,
+      "sha256": "ca7565188d0cad8093b6cc9bab8010ac8212022ce63915fe8dbd79504e901172",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_weiss-auf-waldgruen_1000x1000.png",
+      "bytes": 21499,
+      "sha256": "95e9740c5bd0ed8e3a5599fec8272d2086603bfab56e1d78d30d2c86155ab412",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/1000x1000/bilantiq_wordmark_weiss-transparent_1000x1000.png",
+      "bytes": 15280,
+      "sha256": "932b56a9ffff73f4df21b2cfd2ed8915cc1e8d9c1d5cfac8c4d5dc555b959838",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_limette-auf-waldgruen_500x500.png",
+      "bytes": 10548,
+      "sha256": "0f73d278443eb3365c46cd493bc2fd49ea13212b7eed564d3c925a40594be352",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_limette-transparent_500x500.png",
+      "bytes": 9623,
+      "sha256": "33321109f9b0970ad4af879dc8898f4e55a459ce69dd6b1e3c13a179841def40",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_schwarz-transparent_500x500.png",
+      "bytes": 6265,
+      "sha256": "7e901b4035e54066fb733d6859e00ad2c1eb64584e9e744ac419001ecc9eb223",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_waldgruen-auf-limette_500x500.png",
+      "bytes": 10543,
+      "sha256": "b92a7c659db9de73854b0aba5860069bbf60ff9ad0cde725b210e626f78fc618",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_waldgruen-auf-weiss_500x500.png",
+      "bytes": 10701,
+      "sha256": "c91f3f0f3d9af711b60873f497eda867e2a29343f1e49c9190f185ff6d19a922",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_waldgruen-transparent_500x500.png",
+      "bytes": 9615,
+      "sha256": "4dbb94daa34416bdc52740a4f312276b23be56437671ee1a26dda0d1d6dbc393",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_weiss-auf-waldgruen_500x500.png",
+      "bytes": 10680,
+      "sha256": "494279f404ca113403bd0097bc044ffa58fea4b8ee481c90ac5f3edbb96de819",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_weiss-transparent_500x500.png",
+      "bytes": 7462,
+      "sha256": "824066857dee90db120794b063a4258be3a14fb1ebbef1ba8c4bbfb1840c5f31",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_horizontal_zweifarbig-auf-waldgruen_500x500.png",
+      "bytes": 10811,
+      "sha256": "dd075f558179645e9ceb834269cd2a81cad3d47c65e1bb9cc8da4da4376362cc",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_limette-auf-waldgruen_500x500.png",
+      "bytes": 13245,
+      "sha256": "c1e0566cdd3dd40a9b6842f5be1f4065fb466079b4a854ba43dc41c21dd7e99f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_limette-transparent_500x500.png",
+      "bytes": 12398,
+      "sha256": "bbae45247ed6e6efe1d7954aed356f778458b7e707b7b4cd2a972fc5838d572a",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_schwarz-transparent_500x500.png",
+      "bytes": 8095,
+      "sha256": "735057a436e8eed57e2f42d855ea10610bea5c00a329fa23aa94a012045485b2",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_waldgruen-auf-limette_500x500.png",
+      "bytes": 13191,
+      "sha256": "f84d9524da7dfe2632b46dfa815040514a77d8e91c20cdade6c281dad23ccf43",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_waldgruen-auf-weiss_500x500.png",
+      "bytes": 13397,
+      "sha256": "f9134ab744c6ce17ba11deb3208d353a1a2723a7d882c8da00bc44559420dce7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_waldgruen-transparent_500x500.png",
+      "bytes": 12333,
+      "sha256": "93870bbb6683958183c2ba874648e8bd8e753d9949ed26235faefc33b0645b86",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_weiss-auf-waldgruen_500x500.png",
+      "bytes": 13403,
+      "sha256": "2038c181ca4ed226a59b21f2856e99d8eeac726ad29a65dcd69f6a60bcb3562e",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_weiss-transparent_500x500.png",
+      "bytes": 9286,
+      "sha256": "c728fd5437d26cad5ca4b01c20a4fbbcf57469bb4da164bce4df6ed0224e5f95",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_stacked_zweifarbig-auf-waldgruen_500x500.png",
+      "bytes": 13366,
+      "sha256": "9651e192cf87f95fbdb068714fcb1ba1a9641c05a7916c6bd3e27bde3f4e7161",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_limette-auf-waldgruen_500x500.png",
+      "bytes": 13013,
+      "sha256": "4ec9906e1957d19d35e79c17b7134626d2b53437d275cdc96e35cf87681148e9",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_limette-transparent_500x500.png",
+      "bytes": 12409,
+      "sha256": "16e68b33f3d8dc1c92b3735df828fb0ca4f72bca51dbee5cf1256c6289df8d8c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_schwarz-transparent_500x500.png",
+      "bytes": 8275,
+      "sha256": "b3e14e3f4942b379e08faef2a6184e31d22793194dd866878b2cb2a6d36798fb",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_waldgruen-auf-limette_500x500.png",
+      "bytes": 12889,
+      "sha256": "949b75d05d311162f5521bf3a647124052e46d039114b55a1e1e917962c80439",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_waldgruen-auf-weiss_500x500.png",
+      "bytes": 13373,
+      "sha256": "579f53d611f4ffe8ef00d8b4cb0b8f5547d4294e47df491743f7e965da340092",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_waldgruen-transparent_500x500.png",
+      "bytes": 12349,
+      "sha256": "b304f0fac69d8da09ba90472576364a3aa9064b7d45b5a3cd9e59d179dcc5079",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_weiss-auf-waldgruen_500x500.png",
+      "bytes": 13431,
+      "sha256": "d617975d05495c1a68b4721776d47fa29de984f87b45f7cdbd37d468651277f8",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_symbol_weiss-transparent_500x500.png",
+      "bytes": 10326,
+      "sha256": "e062b1366cfb4af8df8df5733a6315f3c15ba6ff596726b7fd6bdc70e38d3e7a",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_limette-auf-waldgruen_500x500.png",
+      "bytes": 9632,
+      "sha256": "a0bb3f113de9d9867ad4717d837bc32471febed5404b3f1a99a972073b2d76d6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_limette-transparent_500x500.png",
+      "bytes": 8713,
+      "sha256": "76f08247b6b5c3c412107d77717ad761ffd74007f83105dbc08862b3bea91630",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_schwarz-transparent_500x500.png",
+      "bytes": 5873,
+      "sha256": "662abcd7be8576bb4757c8f15fa91d5eed5ee2254e682d6cdf615c0f42d1efd0",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_waldgruen-auf-limette_500x500.png",
+      "bytes": 9560,
+      "sha256": "1534ffe4ce8c04b113761cfedbbf62bffb8ea90e49c80b09b9727917264330b4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_waldgruen-auf-weiss_500x500.png",
+      "bytes": 9721,
+      "sha256": "f01f588730cd06100651ced2b367c173a7a0c7ce271ba222f3e0a01939166bd9",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_waldgruen-transparent_500x500.png",
+      "bytes": 8671,
+      "sha256": "ec6b8003d4840931b5934476c6aef1b9ec1e04e6ab85e49e01ae3ef964efae95",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_weiss-auf-waldgruen_500x500.png",
+      "bytes": 9754,
+      "sha256": "44e1882b74e15f1e796cdda100d3519742be37da706e72b2bc81bf1d0fd2b493",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/500x500/bilantiq_wordmark_weiss-transparent_500x500.png",
+      "bytes": 6739,
+      "sha256": "07685363e90b4ae3f7a12431acb7fb635667d30e7b6b933bdef7d76b0bf68869",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_limette-auf-waldgruen_1600w.png",
+      "bytes": 35819,
+      "sha256": "df3d3b5e3dbfc6d879bd344a8aa74162ecd261d1429d245c06360ee83f3a98d9",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_limette-transparent_1600w.png",
+      "bytes": 36042,
+      "sha256": "7de813dfb82c59e72923c84da28187d37d94f970b014498d48dff9bc510e53b0",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_schwarz-transparent_1600w.png",
+      "bytes": 24682,
+      "sha256": "b75b37c46f6fdbb5d1441eaffd6658b77ec19b0312807abd5024c300804d3fd7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_waldgruen-auf-limette_1600w.png",
+      "bytes": 35810,
+      "sha256": "676709c1e362b749588eacf31b08d80bac7e5ace4d7fe26591dd973f19635901",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_waldgruen-auf-weiss_1600w.png",
+      "bytes": 37340,
+      "sha256": "58c1b8e8e04fd20f3e28a87b03aab767565c802096917f1695e49e99d5b65b4c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_waldgruen-transparent_1600w.png",
+      "bytes": 35669,
+      "sha256": "f1389e97577e6d868fa90aacdcb86695dad5fab3341a2ab24f996bc888db6162",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_weiss-auf-waldgruen_1600w.png",
+      "bytes": 37296,
+      "sha256": "77210101bc5804930d0737f7140f2b7150e5ed8819104f9d384789afcb7aa6af",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_weiss-transparent_1600w.png",
+      "bytes": 28200,
+      "sha256": "3c59e8fbd8af645ca7c26f901f1a752f9291d6111ab5a5542268e432afee87eb",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_horizontal_zweifarbig-auf-waldgruen_1600w.png",
+      "bytes": 37268,
+      "sha256": "6a09925417884fc902d0e70e0d501de40fadf1bc7b7bddbae832da9050278375",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_limette-auf-waldgruen_1600w.png",
+      "bytes": 33648,
+      "sha256": "c9b771c6838d250ceac54184ca6498ec8b10ef29f4607e6612fc08a5783d42d6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_limette-transparent_1600w.png",
+      "bytes": 33872,
+      "sha256": "2ccbdb8de2a80653b56ac44848b9f52cdac6305546526e6fe46cd2b84e66cafd",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_schwarz-transparent_1600w.png",
+      "bytes": 23490,
+      "sha256": "1b56272f8ed63d1a5a496e31a25f2bead31a7da527590a49b0d18b116d4e8914",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_waldgruen-auf-limette_1600w.png",
+      "bytes": 33633,
+      "sha256": "78126b0e2727df82b05fa355012dc91974b7642ec2e54c15e2dc1efd2f25d212",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_waldgruen-auf-weiss_1600w.png",
+      "bytes": 34807,
+      "sha256": "9b7a01f8ae922f529c8e189998a6f1e47d52216208b18bb3700527fd2c7ccfd2",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_waldgruen-transparent_1600w.png",
+      "bytes": 33588,
+      "sha256": "d9eae90068452d1b49f87a6bff0e6d3fb646a9a8c78692c3eb169f29d649e39f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_weiss-auf-waldgruen_1600w.png",
+      "bytes": 34913,
+      "sha256": "53930d51f46302a7576fe0bc22b67ab9d20a5493fb4b02b3f0f35fcfa4efeb97",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/PNG/Horizontal/bilantiq_wordmark_weiss-transparent_1600w.png",
+      "bytes": 26671,
+      "sha256": "d227c98c5ccda1a68d5d2cb4ff2518a3c1b54fd6ac057f058c53f231067afcfa",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_limette-auf-waldgruen.svg",
+      "bytes": 6222,
+      "sha256": "52e31dee57ad9bf6fce2be12b2d9f70bcb02eadea5f9889c5ec04e192e38ac0c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_limette-transparent.svg",
+      "bytes": 6144,
+      "sha256": "27584011be21ef955d9d9d70c0c9b3066105002f01258de19f7b1ffd0ad7bd0c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_schwarz-transparent.svg",
+      "bytes": 6144,
+      "sha256": "dc28c51441502e588ee49643ab8d306bc8352345be4ae4c372e7622b753840bc",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_waldgruen-auf-limette.svg",
+      "bytes": 6222,
+      "sha256": "52271e4039a1e76809134d9cfa176fadbf74bdeed5ee7e2391d458b7aa531da4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_waldgruen-auf-weiss.svg",
+      "bytes": 6222,
+      "sha256": "e589687d60df4d55a122a0af9aa5f12d68ff2c0a677f0ec594939da56e50bd8b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_waldgruen-transparent.svg",
+      "bytes": 6144,
+      "sha256": "5033289887792e99b5c8e313e402f387d60032b2124d4a82d1324c6b69e1338d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_weiss-auf-waldgruen.svg",
+      "bytes": 6222,
+      "sha256": "ec83ae9ef33c40e12c97b4a6b0fde1e233dcebf9b4b9c57abfe12359846a23ab",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_weiss-transparent.svg",
+      "bytes": 6144,
+      "sha256": "8ad9917c6dc93306d8508657dce628cbd7fd3d0a531988bcdc1b8993903773db",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_horizontal_zweifarbig-auf-waldgruen.svg",
+      "bytes": 6222,
+      "sha256": "c7c11865f04a284859684b40bd57a7a98921f8406424ae91fcbd7f304f99eb9a",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_limette-auf-waldgruen.svg",
+      "bytes": 6239,
+      "sha256": "4ddf984798971dc8eea9f7e1fa195bf914a4d37284db22c43060f7234ad3f0fc",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_limette-transparent.svg",
+      "bytes": 6161,
+      "sha256": "be507769a67906737e8b693609805ffc89efe85aff188936c2c756429e3e14b8",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_schwarz-transparent.svg",
+      "bytes": 6161,
+      "sha256": "733d9c7d3206ea45cd45088ee5bc85f418a0dd417a34b1e97315efbad0c1405f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_waldgruen-auf-limette.svg",
+      "bytes": 6239,
+      "sha256": "ba932a95e303d32570a56a91b20a4fb5f29de44454eddad5989d3273be3d628d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_waldgruen-auf-weiss.svg",
+      "bytes": 6239,
+      "sha256": "6fb9182c2d8084e496ab2777e24ca4669aaa2058cd288eec79d64a8dae2c75a2",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_waldgruen-transparent.svg",
+      "bytes": 6161,
+      "sha256": "d9dca981e368a514bfc77f8d90ab86c58b0a5e337f328af214f2e62192d25a7f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_weiss-auf-waldgruen.svg",
+      "bytes": 6239,
+      "sha256": "a1719c4195e146b57cb3641c8fa5c975ad2b8d41c14235e4285250602290c929",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_weiss-transparent.svg",
+      "bytes": 6161,
+      "sha256": "ef4da42f36d07311efefe606d345f01d1c51d288ef88dbd4f2f4d9091fd2665b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_stacked_zweifarbig-auf-waldgruen.svg",
+      "bytes": 6239,
+      "sha256": "2acc8aa3e57f15beb9ec815c8540b8938863371df06242e58e7f0c0b41f1ac24",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_limette-auf-waldgruen.svg",
+      "bytes": 795,
+      "sha256": "4f858c18b719da1803db150b568224bc5f173423c5d90ee3b590da9c5cc90df4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_limette-transparent.svg",
+      "bytes": 734,
+      "sha256": "b9a4f050ef18dd5d774f4c6a9b1e67b06c5cab9a50d8e5e330175f61905b1ab7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_schwarz-transparent.svg",
+      "bytes": 734,
+      "sha256": "665eed474cd6cb85b971907dac14ea734d663ffc66b257675cb906a55e723406",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_waldgruen-auf-limette.svg",
+      "bytes": 795,
+      "sha256": "f62bf1f48f4558c02b8930c0e098b1432157c6f386b6fd803490855fe31b143d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_waldgruen-auf-weiss.svg",
+      "bytes": 795,
+      "sha256": "bbcb396f1c37ba2639cea04fe93bdd487c3700a7960aa9078d0541a6843517dd",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_waldgruen-transparent.svg",
+      "bytes": 734,
+      "sha256": "e3bafcf0435c08bf9570ac53440bff2a83b4a2a4af2e98b5b8de28f8088f46b6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_weiss-auf-waldgruen.svg",
+      "bytes": 795,
+      "sha256": "9d047cdcaa18672641f150e33cb246a85400e377a6f4b0061b3a8b9cce579b4b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_symbol_weiss-transparent.svg",
+      "bytes": 734,
+      "sha256": "b87f55f93f9f6a12367291bb39c33b8aa50545fb7e029087e4041488abfea3ed",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_limette-auf-waldgruen.svg",
+      "bytes": 5566,
+      "sha256": "2cfe55ef83f839db2b4c0a13d9b26188a9b4f032632da88421b9efab2ca76173",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_limette-transparent.svg",
+      "bytes": 5488,
+      "sha256": "97139339190ab2bbb44772446b1449bb190eb08f774e32d6decd93e6a061bed6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_schwarz-transparent.svg",
+      "bytes": 5488,
+      "sha256": "51493cd02ba8df3b564d76f5fc177b1af911ab2cf4225729c3eaa5022328c99f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_waldgruen-auf-limette.svg",
+      "bytes": 5566,
+      "sha256": "9e5aaefd2a8cf0ec03fbcea4fb9864c3d401128a9121e56b3dfa922863ed7162",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_waldgruen-auf-weiss.svg",
+      "bytes": 5566,
+      "sha256": "6ed1f98cc6476c14620192dd7594bf2bd2beeaaec9c03cf82ee0f467f6d8b8f0",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_waldgruen-transparent.svg",
+      "bytes": 5488,
+      "sha256": "367d6e9696102e015970e8f4605459ec9131761b6c9e822ed35adb584377b71a",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_weiss-auf-waldgruen.svg",
+      "bytes": 5566,
+      "sha256": "1fb823a7b056b2e623718e6a59c29fe6a3e072a17d720704e2842216d63f902d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "02_Logos/SVG/bilantiq_wordmark_weiss-transparent.svg",
+      "bytes": 5488,
+      "sha256": "54085f9ea236d6c90a8c618a1a732eab32091a2f2671c21251aaa200bdf39e9d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_limette_1080.png",
+      "bytes": 30727,
+      "sha256": "e998c0b134ffb1c01cca1c911da0804665bb6019f059e1ea27f04ab00f007594",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_limette_400.png",
+      "bytes": 10181,
+      "sha256": "d3e78c69b44cfc98c0e4c319e0c6135810b3dc78652bf3875f992328d151ab99",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_limette_800.png",
+      "bytes": 21997,
+      "sha256": "849127e763d92dd128643630bb33045635d07401fd3fa84774bdae72a4aa19f4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_waldgruen_1080.png",
+      "bytes": 30913,
+      "sha256": "b9578143b08ac43ebff1aed1c4c4ae8b6cd554d6cb2787faf9e096f73cf5500e",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_waldgruen_400.png",
+      "bytes": 10294,
+      "sha256": "998eb0926806de56a44a84db70b84c59d40c4bcc771fedf0ff925e5c5f522304",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_waldgruen_800.png",
+      "bytes": 22103,
+      "sha256": "e9f4c1eca642bf0fe9da9821680fa5eb383f13d31b4032b5c5f945cb38270c82",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_weiss_1080.png",
+      "bytes": 31485,
+      "sha256": "9883658acca849a73e86b8ff7ec9c32148aeedfdeb74b841f1a22e313c488c9d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_weiss_400.png",
+      "bytes": 10526,
+      "sha256": "0569147eda6aa2a8bc06cc34e65f2724bbddc3a3a7c6e231d3defec9ed9575b8",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Profile/bilantiq_profil_weiss_800.png",
+      "bytes": 22794,
+      "sha256": "a31b82debdf2c629a600db36f409ed4118baeda5f89d4cee264938371a75cbc3",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Vorlagen/bilantiq_feed_papier.png",
+      "bytes": 66087,
+      "sha256": "1bc4f4577156a24bd3a00bd7eefb7162e73aaaa9b08ef8d4c24bb8e7c9519cbe",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Vorlagen/bilantiq_feed_papier.svg",
+      "bytes": 39790,
+      "sha256": "43a5fb9301b083b509016e6d0f27b94da4492c7ce5490ba5f2ab6ae283436da5",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Vorlagen/bilantiq_feed_waldgruen.png",
+      "bytes": 49454,
+      "sha256": "d10a7badd7fbe8a29cdd889e17acbe382125e8611550ff902ca4866349e86c83",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Vorlagen/bilantiq_feed_waldgruen.svg",
+      "bytes": 25739,
+      "sha256": "128070ad9dcb556b05e6760fb1eaa0fc95db4e150edb307ceb3fd7df99d3b21e",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Vorlagen/bilantiq_story_limette.png",
+      "bytes": 44928,
+      "sha256": "0228268273edf430a0d2f8121ddc914691c9d4178a36f6b6abad73cd0a434027",
+      "result": "read/format validated"
+    },
+    {
+      "path": "03_Social_Media/Vorlagen/bilantiq_story_limette.svg",
+      "bytes": 16691,
+      "sha256": "a9dc6889c741922ad0f05f487696ada2bfac68b09301ac98f9445a04edd1adc7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/apple-touch-icon.png",
+      "bytes": 4387,
+      "sha256": "0700eb8e92edbb50013f548a1e460b032438b6bb3db9c61f150884386fc5f49d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_16.png",
+      "bytes": 456,
+      "sha256": "857f9a5399fedefaa37e2d415ba4e1d481a056958a618097524747910d8d9e03",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_180.png",
+      "bytes": 4387,
+      "sha256": "0700eb8e92edbb50013f548a1e460b032438b6bb3db9c61f150884386fc5f49d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_192.png",
+      "bytes": 4761,
+      "sha256": "d2be98385e8ba20d14e0820b4e79bc3a65d21d5a6da10110ca3a8600bc003e03",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_32.png",
+      "bytes": 853,
+      "sha256": "bc08a2a47f50a9fbbd39a31d06d42827d383165ac3802c0e1074da22b0b1ff77",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_48.png",
+      "bytes": 1291,
+      "sha256": "a6f2302f16f8afda68838567bdc6a82614784448f71cf114034c03dad408c215",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_512.png",
+      "bytes": 13108,
+      "sha256": "8399eb068c9dba60d6867abca38b7fd81280a69352d4749600b92e4aac3caa42",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_icon_64.png",
+      "bytes": 1726,
+      "sha256": "a33a84dfcc936145c3c97a0d45f23ba6efc70e7033f6dd11ebd11cda2aeefb17",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/bilantiq_maskable_512.png",
+      "bytes": 10756,
+      "sha256": "b82457c6af0ca8201d58e51f3eaf7ee06ca0d383a50026d64ed768aea97fd8f7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/favicon.ico",
+      "bytes": 7513,
+      "sha256": "dd0df7602de954dc74907404983898417395bfb1bcce3c6dadb62ee13d28dd41",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/favicon.svg",
+      "bytes": 733,
+      "sha256": "950241cb0846c931e3f18d2a480d3b3380122f011eb4efbe4cf0093fc0935d9e",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/integration.html",
+      "bytes": 283,
+      "sha256": "ef06240d9c480f7ae7d5b8e7ff6e48ce6d8f0a38e3fd30e76fe2d088d97142e6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "04_App_und_Favicons/site.webmanifest",
+      "bytes": 567,
+      "sha256": "aa8e6dec402a15f520326840f07e0d62c0d8e51ed289201d1b5ac2947748a5d8",
+      "result": "read/format validated"
+    },
+    {
+      "path": "05_Design_Tokens/bilantiq.css",
+      "bytes": 1162,
+      "sha256": "41dc96951097fa31684be6622a0d3b7bae0861d4201d5ee98bdb173198741c31",
+      "result": "read/format validated"
+    },
+    {
+      "path": "05_Design_Tokens/bilantiq.tokens.json",
+      "bytes": 1053,
+      "sha256": "8e4b159d2d8ed232c2b05ebf55873322ef82a6a277340add93a8cd4712c96d68",
+      "result": "read/format validated"
+    },
+    {
+      "path": "05_Design_Tokens/farben.csv",
+      "bytes": 521,
+      "sha256": "a5129feaf1371841f5c808997f9613b29c3863f9fd277d7843e2aa5a047f1f07",
+      "result": "read/format validated"
+    },
+    {
+      "path": "05_Design_Tokens/kontraste.json",
+      "bytes": 712,
+      "sha256": "12eb12c67882c731fca34e0b71a8b8009f33e30a2ca67194ab9138591cbcc237",
+      "result": "read/format validated"
+    },
+    {
+      "path": "06_Schriften/IBMPlexSans-OFL.txt",
+      "bytes": 4456,
+      "sha256": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da",
+      "result": "read/format validated"
+    },
+    {
+      "path": "06_Schriften/IBMPlexSans-Variable.ttf",
+      "bytes": 537244,
+      "sha256": "3b031aa4216174205bd8471f88a49b91f093169e9e87bd5262242bc5967fe2e3",
+      "result": "read/format validated"
+    },
+    {
+      "path": "06_Schriften/Manrope-OFL.txt",
+      "bytes": 4384,
+      "sha256": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "06_Schriften/Manrope-Variable.ttf",
+      "bytes": 165420,
+      "sha256": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/README.md",
+      "bytes": 718,
+      "sha256": "036899c4cccfab975c50160c16429dd31baece3493c2b85901c298481871e86f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_limette-auf-waldgruen.svg",
+      "bytes": 6222,
+      "sha256": "52e31dee57ad9bf6fce2be12b2d9f70bcb02eadea5f9889c5ec04e192e38ac0c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_limette-transparent.svg",
+      "bytes": 6144,
+      "sha256": "27584011be21ef955d9d9d70c0c9b3066105002f01258de19f7b1ffd0ad7bd0c",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_schwarz-transparent.svg",
+      "bytes": 6144,
+      "sha256": "dc28c51441502e588ee49643ab8d306bc8352345be4ae4c372e7622b753840bc",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_waldgruen-auf-limette.svg",
+      "bytes": 6222,
+      "sha256": "52271e4039a1e76809134d9cfa176fadbf74bdeed5ee7e2391d458b7aa531da4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_waldgruen-auf-weiss.svg",
+      "bytes": 6222,
+      "sha256": "e589687d60df4d55a122a0af9aa5f12d68ff2c0a677f0ec594939da56e50bd8b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_waldgruen-transparent.svg",
+      "bytes": 6144,
+      "sha256": "5033289887792e99b5c8e313e402f387d60032b2124d4a82d1324c6b69e1338d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_weiss-auf-waldgruen.svg",
+      "bytes": 6222,
+      "sha256": "ec83ae9ef33c40e12c97b4a6b0fde1e233dcebf9b4b9c57abfe12359846a23ab",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_weiss-transparent.svg",
+      "bytes": 6144,
+      "sha256": "8ad9917c6dc93306d8508657dce628cbd7fd3d0a531988bcdc1b8993903773db",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_horizontal_zweifarbig-auf-waldgruen.svg",
+      "bytes": 6222,
+      "sha256": "c7c11865f04a284859684b40bd57a7a98921f8406424ae91fcbd7f304f99eb9a",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_limette-auf-waldgruen.svg",
+      "bytes": 6239,
+      "sha256": "4ddf984798971dc8eea9f7e1fa195bf914a4d37284db22c43060f7234ad3f0fc",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_limette-transparent.svg",
+      "bytes": 6161,
+      "sha256": "be507769a67906737e8b693609805ffc89efe85aff188936c2c756429e3e14b8",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_schwarz-transparent.svg",
+      "bytes": 6161,
+      "sha256": "733d9c7d3206ea45cd45088ee5bc85f418a0dd417a34b1e97315efbad0c1405f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_waldgruen-auf-limette.svg",
+      "bytes": 6239,
+      "sha256": "ba932a95e303d32570a56a91b20a4fb5f29de44454eddad5989d3273be3d628d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_waldgruen-auf-weiss.svg",
+      "bytes": 6239,
+      "sha256": "6fb9182c2d8084e496ab2777e24ca4669aaa2058cd288eec79d64a8dae2c75a2",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_waldgruen-transparent.svg",
+      "bytes": 6161,
+      "sha256": "d9dca981e368a514bfc77f8d90ab86c58b0a5e337f328af214f2e62192d25a7f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_weiss-auf-waldgruen.svg",
+      "bytes": 6239,
+      "sha256": "a1719c4195e146b57cb3641c8fa5c975ad2b8d41c14235e4285250602290c929",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_weiss-transparent.svg",
+      "bytes": 6161,
+      "sha256": "ef4da42f36d07311efefe606d345f01d1c51d288ef88dbd4f2f4d9091fd2665b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_stacked_zweifarbig-auf-waldgruen.svg",
+      "bytes": 6239,
+      "sha256": "2acc8aa3e57f15beb9ec815c8540b8938863371df06242e58e7f0c0b41f1ac24",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_limette-auf-waldgruen.svg",
+      "bytes": 795,
+      "sha256": "4f858c18b719da1803db150b568224bc5f173423c5d90ee3b590da9c5cc90df4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_limette-transparent.svg",
+      "bytes": 734,
+      "sha256": "b9a4f050ef18dd5d774f4c6a9b1e67b06c5cab9a50d8e5e330175f61905b1ab7",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_schwarz-transparent.svg",
+      "bytes": 734,
+      "sha256": "665eed474cd6cb85b971907dac14ea734d663ffc66b257675cb906a55e723406",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_waldgruen-auf-limette.svg",
+      "bytes": 795,
+      "sha256": "f62bf1f48f4558c02b8930c0e098b1432157c6f386b6fd803490855fe31b143d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_waldgruen-auf-weiss.svg",
+      "bytes": 795,
+      "sha256": "bbcb396f1c37ba2639cea04fe93bdd487c3700a7960aa9078d0541a6843517dd",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_waldgruen-transparent.svg",
+      "bytes": 734,
+      "sha256": "e3bafcf0435c08bf9570ac53440bff2a83b4a2a4af2e98b5b8de28f8088f46b6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_weiss-auf-waldgruen.svg",
+      "bytes": 795,
+      "sha256": "9d047cdcaa18672641f150e33cb246a85400e377a6f4b0061b3a8b9cce579b4b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_symbol_weiss-transparent.svg",
+      "bytes": 734,
+      "sha256": "b87f55f93f9f6a12367291bb39c33b8aa50545fb7e029087e4041488abfea3ed",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_limette-auf-waldgruen.svg",
+      "bytes": 5566,
+      "sha256": "2cfe55ef83f839db2b4c0a13d9b26188a9b4f032632da88421b9efab2ca76173",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_limette-transparent.svg",
+      "bytes": 5488,
+      "sha256": "97139339190ab2bbb44772446b1449bb190eb08f774e32d6decd93e6a061bed6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_schwarz-transparent.svg",
+      "bytes": 5488,
+      "sha256": "51493cd02ba8df3b564d76f5fc177b1af911ab2cf4225729c3eaa5022328c99f",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_waldgruen-auf-limette.svg",
+      "bytes": 5566,
+      "sha256": "9e5aaefd2a8cf0ec03fbcea4fb9864c3d401128a9121e56b3dfa922863ed7162",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_waldgruen-auf-weiss.svg",
+      "bytes": 5566,
+      "sha256": "6ed1f98cc6476c14620192dd7594bf2bd2beeaaec9c03cf82ee0f467f6d8b8f0",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_waldgruen-transparent.svg",
+      "bytes": 5488,
+      "sha256": "367d6e9696102e015970e8f4605459ec9131761b6c9e822ed35adb584377b71a",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_weiss-auf-waldgruen.svg",
+      "bytes": 5566,
+      "sha256": "1fb823a7b056b2e623718e6a59c29fe6a3e072a17d720704e2842216d63f902d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/Logos/bilantiq_wordmark_weiss-transparent.svg",
+      "bytes": 5488,
+      "sha256": "54085f9ea236d6c90a8c618a1a732eab32091a2f2671c21251aaa200bdf39e9d",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/asset_manifest.json",
+      "bytes": 20807,
+      "sha256": "586dd559656f2d6ea26637f944a95ca818e4b7abb25a3c29c82c72c8930688e4",
+      "result": "read/format validated"
+    },
+    {
+      "path": "07_Quelldateien/build_brand.py",
+      "bytes": 47581,
+      "sha256": "499a2270dc0502bf12391394e099a7b031eae451bd34a326ad49c06c219cfb27",
+      "result": "read/format validated"
+    },
+    {
+      "path": "08_Geschaeftsausstattung/briefbogen_A4_vorlage.svg",
+      "bytes": 71632,
+      "sha256": "7d7a436787fc510015254ed0eb0ac2185b490cf3b69643aff6eacc0510d8104b",
+      "result": "read/format validated"
+    },
+    {
+      "path": "08_Geschaeftsausstattung/visitenkarte_rueckseite_inkl_beschnitt.svg",
+      "bytes": 46575,
+      "sha256": "2399d763cf3e6344d6bf5932ad03b270f55b3487314e3ca536c2322e10e7b307",
+      "result": "read/format validated"
+    },
+    {
+      "path": "08_Geschaeftsausstattung/visitenkarte_vorderseite_inkl_beschnitt.svg",
+      "bytes": 18506,
+      "sha256": "f41a8416325dc352142e8b2ad09a258b7038512badd36522466791c0fb7a5be6",
+      "result": "read/format validated"
+    },
+    {
+      "path": "START_HIER.md",
+      "bytes": 2476,
+      "sha256": "cc3c9839d4c4d12b191a921f9ad97a4fb096d19af20900d1e2cc42634822c147",
+      "result": "read/format validated"
+    }
+  ]
+}

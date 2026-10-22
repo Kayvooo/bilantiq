@@ -1,0 +1,21 @@
+Bilantiq
+Copyright (C) 2026 Bilantiq contributors
+
+Dieses Programm ist freie Software: Sie können es unter den Bedingungen der GNU Affero General Public License, Version 3,
+weitergeben und/oder verändern (siehe Datei LICENSE). Es wird in der Hoffnung bereitgestellt, nützlich zu sein, aber
+OHNE JEDE GEWÄHRLEISTUNG, auch ohne die stillschweigende Gewährleistung der MARKTGÄNGIGKEIT oder der EIGNUNG FÜR EINEN
+BESTIMMTEN ZWECK.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public
+License as published by the Free Software Foundation, version 3. It is distributed WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+Wenn Sie eine veränderte Version über ein Netzwerk für andere Nutzer betreiben, verlangt Abschnitt 13 der AGPL, diesen
+Nutzern den Quelltext Ihrer Version anzubieten.
+
+Name und Logo "Bilantiq" sind von der Code-Lizenz nicht erfasst, siehe TRADEMARK.md.
+
+Drittkomponenten: Abhängigkeiten behalten ihre eigenen Lizenzen (siehe backend/requirements.txt und frontend/package.json).
+Mitgelieferte Schriften: Manrope und IBM Plex Sans unter der SIL Open Font License 1.1 (frontend/public/brand/fonts).
+Die XRechnung-Prüfregeln werden nicht mitgeliefert, sondern per backend/scripts/kosit_regeln_holen.py geholt; ihre Lizenzen
+(Apache-2.0, EUPL-1.2, MIT, OASIS) liegen dann im Regelordner.

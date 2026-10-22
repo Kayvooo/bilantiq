@@ -1,0 +1,4 @@
+Buchungstag;Wertstellung;Auftraggeber/Empfänger;IBAN;Verwendungszweck;Betrag
+02.10.2026;02.10.2026;Beispiel Kunde GmbH;DE02120300000000202051;Rechnung RE-2026-0001 Danke;"1.240,00"
+03.10.2026;03.10.2026;Nordwind Hosting GmbH;DE75512108001245126199;Webhosting Oktober;"-49,90"
+03.10.2026;03.10.2026;Bäckerei Süß;;Brötchen;"-12,50"

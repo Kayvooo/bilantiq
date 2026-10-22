@@ -1,0 +1,33 @@
+/* Bilantiq brand v2.0 - sRGB */
+:root {
+  --bq-forest: #143D2B;
+  --bq-lime: #D8F36A;
+  --bq-paper: #F7F8F2;
+  --bq-ink: #18251D;
+  --bq-white: #FFFFFF;
+  --bq-muted: #526258;
+  --bq-line: #DDE3D9;
+  --bq-border: #7B8B7F;
+  --bq-hover: #0D2D1E;
+  --bq-pressed: #082216;
+  --bq-success: #246443;
+  --bq-success-bg: #EAF5EC;
+  --bq-warning: #835000;
+  --bq-warning-bg: #FFF4DC;
+  --bq-error: #B23838;
+  --bq-error-bg: #FFF0EE;
+  --bq-info: #245CA6;
+  --bq-info-bg: #EDF3FF;
+  --bq-focus: #245CA6;
+  --bq-font-display: "Manrope", sans-serif;
+  --bq-font-body: "IBM Plex Sans", sans-serif;
+  --bq-radius-control: 10px;
+  --bq-radius-card: 16px;
+  --bq-radius-panel: 24px;
+}
+.bq-financial-number { font-variant-numeric: tabular-nums; text-align: right; }
+.bq-button { min-height: 44px; border-radius: var(--bq-radius-control); color: var(--bq-white); background: var(--bq-forest); }
+.bq-button:hover { background: var(--bq-hover); }
+.bq-button:active { background: var(--bq-pressed); }
+.bq-button:focus-visible { outline: 3px solid var(--bq-focus); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .bq-motion { animation: none; transition: none; } }

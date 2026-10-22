@@ -1,0 +1,3 @@
+Type,Product,Started Date,Completed Date,Description,Amount,Fee,Currency,State,Balance
+CARD_PAYMENT,Current,2026-10-01 08:12:44,2026-10-02 09:00:01,Nordwind Hosting GmbH,-49.90,0.00,EUR,COMPLETED,950.10
+TRANSFER,Current,2026-10-03 10:00:00,2026-10-03 10:00:05,Beispiel Kunde GmbH,1240.00,0.00,EUR,COMPLETED,2190.10

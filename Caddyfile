@@ -1,0 +1,45 @@
+# Reverse-Proxy fuer eine selbst betriebene Bilantiq-Instanz.
+#
+# Die Domains kommen aus den Umgebungsvariablen APP_DOMAIN (Oberflaeche) und API_DOMAIN (API); docker-compose.prod.yml
+# reicht sie aus .env.prod durch. Beispiel: APP_DOMAIN=buchhaltung.example.org, API_DOMAIN=api.buchhaltung.example.org.
+# Caddy holt automatisch Let's-Encrypt-Zertifikate. Voraussetzung: Ports 80/443 sind offen und beide DNS-Eintraege
+# zeigen auf diesen Server. Siehe docs/self-hosting.md.
+
+# Frontend (Single-Page-App) unter der App-Domain.
+{$APP_DOMAIN} {
+	encode gzip
+	root * /srv
+	try_files {path} /index.html
+	file_server
+
+	# PWA: Der Service Worker darf nie veraltet aus dem Cache kommen, sonst erreicht ein
+	# neues Release installierte Apps nicht. Gehashte Vite-Dateien sind dagegen unveraenderlich.
+	@sw path /sw.js
+	header @sw Cache-Control "no-cache"
+	@manifest path /brand/site.webmanifest
+	header @manifest Content-Type "application/manifest+json"
+	@hashed path /assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=63072000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		# Die CSP fuer das SPA erlaubt eigene Skripte/Styles (self) und den Fetch zur
+		# API-Domain; blob:/data: fuer die PDF-Live-Vorschau (iframe) und Logo-Bilder.
+		# 'unsafe-inline' bei style-src wegen React-Inline-Styles. Nach dem ersten
+		# Deploy einmal die Browser-Konsole auf CSP-Verstoesse pruefen und ggf. feinjustieren.
+		Content-Security-Policy "default-src 'self'; connect-src 'self' https://{$API_DOMAIN}; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+	}
+}
+
+# Backend-API unter eigener Subdomain -- saubere Trennung von SPA und API, keine
+# fragile Pfad-Aufteilung noetig. Das Backend setzt seine eigenen Security-Header
+# (siehe app/main.py).
+{$API_DOMAIN} {
+	# Caddy selbst setzt "Server: Caddy"; das Backend sendet dank --no-server-header keinen eigenen.
+	header -Server
+	reverse_proxy backend:8000
+}

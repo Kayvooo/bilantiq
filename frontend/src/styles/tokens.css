@@ -1,0 +1,79 @@
+/* Bilantiq Brandguide 2.0 (2026): lokal geladene Schriften und semantische UI-Tokens. */
+@import "./brand.css";
+
+@font-face {
+  font-family: "Manrope";
+  src: url("/brand/fonts/Manrope-Variable.ttf") format("truetype");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/brand/fonts/IBMPlexSans-Variable.ttf") format("truetype");
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bestehende Komponenten behalten ihre semantischen Namen. Farbmaster: brand.css. */
+:root {
+  --bg: var(--bq-paper);
+  --surface: var(--bq-white);
+  --surface-sunken: var(--bq-paper);
+  --text: var(--bq-ink);
+  --text-muted: var(--bq-muted);
+  --text-faint: var(--bq-muted);
+  --border: var(--bq-line);
+  --border-strong: var(--bq-border);
+  --primary: var(--bq-forest);
+  --primary-hover: var(--bq-hover);
+  --primary-active: var(--bq-pressed);
+  --primary-contrast: var(--bq-white);
+  --accent: var(--bq-lime);
+  --accent-ink: var(--bq-forest);
+  --accent-soft: var(--bq-lime);
+  --focus: var(--bq-focus);
+  /* Heller Ring unter dem Fokusring auf dunklem Grund (Primaergruen): #245CA6 hat dort nur 1,8:1, auf Weiss 6,7:1. */
+  --focus-halo: var(--bq-white);
+  --success: var(--bq-success);
+  --success-soft: var(--bq-success-bg);
+  --warn: var(--bq-warning);
+  --warn-soft: var(--bq-warning-bg);
+  --danger: var(--bq-error);
+  --danger-soft: var(--bq-error-bg);
+  --info: var(--bq-info);
+  --info-soft: var(--bq-info-bg);
+  --chart-1: var(--bq-forest);
+  --chart-2: var(--bq-info);
+  --chart-3: var(--bq-muted);
+  --chart-4: var(--bq-border);
+  --chart-5: var(--bq-ink);
+  --nav-text: var(--bq-white);
+  --nav-text-muted: var(--bq-line);
+  --font-display: var(--bq-font-display), ui-sans-serif, system-ui;
+  --font-body: var(--bq-font-body), ui-sans-serif, system-ui;
+  --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+  --radius-control: var(--bq-radius-control);
+  --radius-card: var(--bq-radius-card);
+  --radius-panel: var(--bq-radius-panel);
+  --motion-fast: 140ms;
+  --motion-panel: 220ms;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  /* Topbar: 16px Padding + 40px Logo-Box + 16px Padding + 1px Kontur. */
+  --topbar-height: 73px;
+  font: 16px/1.5 var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  color-scheme: light;
+  font-synthesis: none;
+}

@@ -1,0 +1,19 @@
+# NUR FUER DIE ENTWICKLUNG: eine lokale Postgres-Datenbank fuer das Backend auf dem eigenen Rechner.
+# Fuer den Betrieb einer Instanz gilt docker-compose.prod.yml (siehe docs/self-hosting.md).
+#
+# Der Port ist nur an localhost gebunden, die Datenbank ist von anderen Rechnern im Netz nicht erreichbar. Das Passwort
+# ist ein Wegwerfwert fuer lokale Entwicklung; wer es aendern will, setzt POSTGRES_PASSWORD in der Shell.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: bilantiq
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bilantiq_dev_only}
+      POSTGRES_DB: bilantiq
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - bilantiq_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  bilantiq_postgres_data:
