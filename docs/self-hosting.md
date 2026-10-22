@@ -143,6 +143,28 @@ Grenze: Zwei exakt gleichzeitige Erstregistrierungen auf einer frischen, noch le
 gesperrt. Registrieren Sie das erste Konto direkt nach dem Start, bevor Sie die Adresse weitergeben. Die Registrierung
 ist zusätzlich je IP-Adresse begrenzt.
 
+### Zwei-Faktor-Pflicht (`MFA_PFLICHT`)
+
+Der Inhaber (Rolle `owner`) kommt nur mit eingerichteter Zwei-Faktor-Anmeldung an die Buchhaltung. `MFA_PFLICHT` in `.env.prod`:
+
+| Wert | Wirkung |
+| --- | --- |
+| `owner` (Standard) | Rolle `owner` braucht MFA, Mitglieder dürfen sie nutzen, müssen aber nicht. |
+| `alle` | Jede Rolle braucht MFA. Empfohlen, sobald mehrere Personen Zugang haben. |
+| `aus` | Nur für Entwicklung und Tests (`APP_ENV=development`). In `production`/`staging` startet die App damit nicht. |
+
+- **Erste Anmeldung:** Wer MFA noch nicht eingerichtet hat, sieht nach dem Login nur den Einrichtungsbildschirm (Secret in die
+  Authenticator-App, Code bestätigen, Wiederherstellungscodes sichern). Erst danach beginnt die Sitzung.
+- **Update einer bestehenden Instanz:** Inhaber ohne MFA werden beim ersten Aufruf nach dem Update einmal abgemeldet und
+  richten MFA beim nächsten Login ein. Sagen Sie das vorher Ihren Inhabern.
+- **Sensible Aktionen** (IBAN/BIC ändern, Zugänge anlegen oder entfernen, Gesamtexport) fragen zusätzlich nach einem aktuellen
+  Code (5 Minuten gültig). „Dieses Gerät merken“ ersetzt das nicht.
+- **Gerät und Codes verloren:** Als Betreiber `python -m scripts.konto_wiederherstellen --email … --mfa-zuruecksetzen`
+  (Abschnitt 7). Das Konto richtet MFA beim nächsten Login neu ein; die Pflicht wird dadurch nicht umgangen.
+- Einziger Inhaber? Sichern Sie die Wiederherstellungscodes getrennt vom Handy. Ohne sie und ohne Server-Zugang gibt es keinen Weg zurück.
+
+Einzelheiten und Grenzen: `docs/specs/mfa-pflicht.md`.
+
 ## 7. E-Mail ist optional, Konto wiederherstellen
 
 SMTP ist optional. Fehlen `SMTP_HOST`, `SMTP_USER`, `SMTP_PASSWORD` (Secret-Datei `smtp_password`) oder eine
@@ -261,6 +283,7 @@ sie an Behörden oder Dritte weitergeben.
 - [ ] `APP_ENV=production`, `TRUSTED_HOSTS_RAW` und `CORS_ALLOWED_ORIGINS_RAW` auf die eigenen Domains gesetzt (die App startet sonst nicht)
 - [ ] Secrets mit `init-secrets.sh` erzeugt, getrennt vom Datenbackup gesichert, keine Platzhalter
 - [ ] `REGISTRATION_MODE=first_account` oder `closed`
+- [ ] `MFA_PFLICHT=owner` (oder `alle`), nicht `aus`; Wiederherstellungscodes des Inhabers getrennt gesichert
 - [ ] MFA für alle Inhaber-Konten eingerichtet, Wiederherstellungscodes gespeichert
 - [ ] Firewall: nur 22/80/443, Postgres nirgends veröffentlicht, von außen geprüft
 - [ ] Backup mit `age` und Off-site-Kopie, Restore auf einem Testsystem durchgeführt

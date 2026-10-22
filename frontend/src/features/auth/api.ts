@@ -37,8 +37,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export interface PreAuthResponse {
-  /** "mfa_optional": ohne Zwei-Faktor-Anmeldung angemeldet, access_token ist gesetzt. */
-  status: "mfa_optional" | "mfa_required";
+  /** "mfa_optional": ohne Zwei-Faktor-Anmeldung angemeldet, access_token ist gesetzt.
+   * "mfa_einrichtung_erforderlich": MFA ist Pflicht und noch nicht eingerichtet; es gibt nur pre_auth_token (kein access_token). */
+  status: "mfa_optional" | "mfa_required" | "mfa_einrichtung_erforderlich";
   pre_auth_token: string;
   access_token?: string | null;
 }
@@ -81,6 +82,47 @@ export function loginMfa(preAuthToken: string, code: string, rememberDevice = fa
     body: JSON.stringify({ code, remember_device: rememberDevice }),
   });
 }
+
+export interface MfaAktiviertAntwort extends TokenResponse {
+  /** Nur bei der ersten Aktivierung gesetzt und wird nie wieder angezeigt. */
+  wiederherstellungscodes?: string[] | null;
+}
+
+/** Pflicht-Einrichtung: Secret holen (mit dem Einrichtungs-Token der Anmeldung, nicht mit einer Sitzung). */
+export function mfaSetupMitPreToken(preAuthToken: string) {
+  return request<MfaSetupResponse>("/auth/mfa/setup", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${preAuthToken}` },
+  });
+}
+
+/** Pflicht-Einrichtung abschliessen: erst jetzt entsteht die volle Sitzung. */
+export function mfaVerifyMitPreToken(preAuthToken: string, code: string, rememberDevice = false) {
+  return request<MfaAktiviertAntwort>("/auth/mfa/verify", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${preAuthToken}` },
+    body: JSON.stringify({ code, remember_device: rememberDevice }),
+  });
+}
+
+/** Aktionsklassen, die eine frische MFA-Bestaetigung verlangen (docs/specs/mfa-pflicht.md). */
+export type BestaetigungAktion = "iban_aendern" | "benutzer_verwalten" | "gesamtexport";
+
+export interface BestaetigungAntwort {
+  bestaetigung_token: string;
+  gueltig_bis: string;
+}
+
+export function erteileBestaetigung(accessToken: string, aktion: BestaetigungAktion, code: string) {
+  return request<BestaetigungAntwort>("/auth/bestaetigung", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ aktion, code }),
+  });
+}
+
+/** Header fuer eine Aktion mit frischer Bestaetigung (vom Server mit HTTP 428 angefordert). */
+export type ExtraHeaders = Record<string, string>;
 
 /** Beendet die aktuelle Sitzung auch serverseitig (der Token wird ungueltig). */
 export function logout(accessToken: string) {
@@ -188,9 +230,9 @@ export function deleteAccount(accessToken: string, passwort: string, mfaCode?: s
   });
 }
 
-export async function fetchDatenexport(accessToken: string): Promise<Blob> {
+export async function fetchDatenexport(accessToken: string, extraHeaders: ExtraHeaders = {}): Promise<Blob> {
   const response = await fetch(`${BASE_URL}/auth/datenexport`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}`, ...extraHeaders },
   });
   if (!response.ok) {
     if (response.status === 401) notifyUnauthorized();
@@ -278,10 +320,10 @@ export function getMandant(accessToken: string) {
   });
 }
 
-export function updateMandant(accessToken: string, updates: MandantUpdate) {
+export function updateMandant(accessToken: string, updates: MandantUpdate, extraHeaders: ExtraHeaders = {}) {
   return request<Mandant>("/auth/mandant", {
     method: "PATCH",
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}`, ...extraHeaders },
     body: JSON.stringify(updates),
   });
 }
@@ -305,10 +347,10 @@ export function listMitglieder(accessToken: string) {
   return request<Mitglied[]>("/auth/mitglieder", { headers: { Authorization: `Bearer ${accessToken}` } });
 }
 
-export function entferneMitglied(accessToken: string, userId: string) {
+export function entferneMitglied(accessToken: string, userId: string, extraHeaders: ExtraHeaders = {}) {
   return request<void>(`/auth/mitglieder/${userId}/entfernen`, {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}`, ...extraHeaders },
   });
 }
 
@@ -319,10 +361,10 @@ export interface MitgliedDirekt {
   initial_passwort: string;
 }
 
-export function erstelleMitgliedDirekt(accessToken: string, email: string, rolle: "mitglied" | "owner") {
+export function erstelleMitgliedDirekt(accessToken: string, email: string, rolle: "mitglied" | "owner", extraHeaders: ExtraHeaders = {}) {
   return request<MitgliedDirekt>("/auth/mitglieder", {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}`, ...extraHeaders },
     body: JSON.stringify({ email, rolle }),
   });
 }
@@ -339,10 +381,10 @@ export function listEinladungen(accessToken: string) {
   return request<Einladung[]>("/auth/einladungen", { headers: { Authorization: `Bearer ${accessToken}` } });
 }
 
-export function createEinladung(accessToken: string, rolle: "mitglied" | "owner") {
+export function createEinladung(accessToken: string, rolle: "mitglied" | "owner", extraHeaders: ExtraHeaders = {}) {
   return request<Einladung>("/auth/einladungen", {
     method: "POST",
-    headers: { Authorization: `Bearer ${accessToken}` },
+    headers: { Authorization: `Bearer ${accessToken}`, ...extraHeaders },
     body: JSON.stringify({ rolle }),
   });
 }

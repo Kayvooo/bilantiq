@@ -78,7 +78,7 @@ def wiederherstellen(db, *, email: str, neues_passwort: str, mfa_zuruecksetzen: 
         kontext="passwort+mfa" if mfa_zuruecksetzen else "passwort",
     )
     db.commit()
-    hinweis = "Zwei-Faktor-Anmeldung wurde abgeschaltet." if mfa_zuruecksetzen else (
+    hinweis = "Zwei-Faktor-Anmeldung wurde abgeschaltet. Bei Rollen mit MFA-Pflicht (Standard: Owner) richtet das Konto sie beim nächsten Login neu ein." if mfa_zuruecksetzen else (
         "Die Zwei-Faktor-Anmeldung bleibt aktiv (falls eingerichtet); bei verlorenem Gerät --mfa-zuruecksetzen verwenden."
     )
     return f"Passwort gesetzt, alle Sitzungen widerrufen. {hinweis}"

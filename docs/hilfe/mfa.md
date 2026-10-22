@@ -6,7 +6,7 @@ Einrichten, neu einrichten und deaktivieren.
 
 Mit Zwei-Faktor-Anmeldung braucht jede Anmeldung zusätzlich einen 6-stelligen Code aus einer Authenticator-App (TOTP). Das schützt dein Konto auch dann, wenn jemand dein Passwort kennt.
 
-Sie ist optional, wird aber dringend empfohlen. Solange sie nicht eingerichtet ist, erinnert dich die Anwendung nach jeder Anmeldung einmal am Dashboard daran.
+Für den Inhaber (Rolle „Owner“) ist sie Pflicht: Ohne eingerichtete Zwei-Faktor-Anmeldung zeigt Bilantiq nach dem Login nur den Einrichtungsbildschirm. Für Mitglieder ist sie optional (außer der Betreiber hat sie für alle vorgeschrieben) und wird dringend empfohlen; solange sie nicht eingerichtet ist, erinnert dich die Anwendung nach jeder Anmeldung einmal am Dashboard daran.
 
 ## Einrichten
 
@@ -22,7 +22,13 @@ Nach Passwort und Code kannst du „Dieses Gerät 30 Tage merken“ wählen. Das
 
 Im selben Abschnitt wählst du „MFA neu einrichten“. Dafür brauchst du dein aktuelles Passwort und einen aktuellen Code. Die bisherige Zwei-Faktor-Anmeldung bleibt aktiv, bis du den Code der neuen Einrichtung bestätigt hast.
 
+## Aktuellen Code bei sensiblen Aktionen
+
+Bevor du die IBAN änderst, Zugänge anlegst oder entfernst oder alle Daten exportierst, fragt Bilantiq nach einem aktuellen Code (oder einem Wiederherstellungscode). Die Bestätigung gilt 5 Minuten für diese Art von Aktion. „Dieses Gerät merken“ ersetzt sie nicht. Hast du dich gerade erst angemeldet, kann es bis zu 30 Sekunden dauern, bis die App einen neuen Code anzeigt, denn derselbe Code lässt sich nicht zweimal verwenden.
+
 ## Deaktivieren
+
+Als Inhaber (oder wenn der Betreiber MFA für alle vorschreibt) kannst du die Zwei-Faktor-Anmeldung nicht abschalten, nur auf einem neuen Gerät neu einrichten. Für alle anderen:
 
 1. Öffne Mehr → Sicherheit & Datenschutz → Zwei-Faktor-Anmeldung.
 2. Gib dein aktuelles Passwort und einen aktuellen 6-stelligen Code ein und wähle „MFA deaktivieren“.

@@ -58,9 +58,15 @@ Das Skript ist idempotent.
 
 - Passwortspeicherung: Argon2id.
 - Alte bcrypt-Hashes werden beim naechsten erfolgreichen Login automatisch ersetzt.
-- MFA/TOTP ist **optional** (seit PR #12). Wer sie nicht eingerichtet hat, bekommt direkt eine volle
-  Sitzung (Audit-Eintrag `sitzung_erstellt` mit Kontext `ohne_mfa`); das Dashboard zeigt ein Hinweis-Popup zur
-  Einrichtung. Ob MFA für Inhaber oder Konten mit Mitarbeitern erzwungen wird, ist offen.
+- **MFA-Pflicht** (`MFA_PFLICHT`, Standard `owner`, siehe `docs/specs/mfa-pflicht.md`): Ein Owner ohne eingerichtetes MFA
+  erhält nach der Anmeldung **keine** volle Sitzung, sondern nur das `pre_mfa`-Token, das ausschließlich die Einrichtung öffnet
+  (`/auth/mfa/setup`, `/auth/mfa/verify`). `require_full_auth` prüft Rolle und MFA-Stand bei jedem Aufruf aus der Datenbank und
+  verwirft deshalb auch alte Sitzungen von Owner-Konten ohne MFA (Bestandsupgrade ohne Migration). Für Rollen ohne Pflicht
+  (Mitglieder bei `owner`) bleibt MFA optional (Audit `sitzung_erstellt` mit Kontext `ohne_mfa`, Hinweis im Dashboard).
+  `MFA_PFLICHT=aus` ist nur mit `APP_ENV=development` zulässig. Das Abschalten von MFA ist für Pflichtrollen gesperrt.
+- **Frische Bestätigung** für IBAN/BIC-Änderung, Benutzerverwaltung und Gesamtexport: HTTP 428, dann `POST /auth/bestaetigung`
+  mit aktuellem TOTP- oder Wiederherstellungscode, Token (JWT, 5 Minuten, an Konto, Sitzung, Mandant, `security_version` und
+  Aktionsklasse gebunden) im Header `X-Bestaetigung`. „Gerät merken“ zählt nicht als frisch.
 - MFA deaktivieren geht nur mit aktuellem Passwort **und** aktuellem Code (`POST /security/mfa/deaktivieren`);
   danach werden alle Sitzungen widerrufen und `mfa_deaktiviert` protokolliert.
 - **TOTP-Replay-Schutz:** Ein Code ist pro Konto nur einmal verwendbar. Gespeichert wird der letzte verbrauchte

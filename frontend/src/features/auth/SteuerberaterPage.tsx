@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { mitBestaetigung } from "./bestaetigung";
 import { GroupedListRow, GroupedListSection } from "../../components/GroupedList";
 import { PageHeader } from "../../components/PageHeader";
 import { PageState } from "../../components/PageState";
@@ -52,7 +53,7 @@ export function SteuerberaterPage({ accessToken, onBack, onOpenEuer, onOpenUstva
     setSaveStatus("saving");
     setError("");
     try {
-      setForm(toForm(await updateMandant(accessToken, form)));
+      setForm(toForm(await mitBestaetigung(accessToken, "iban_aendern", (h) => updateMandant(accessToken, form, h))));
       setSaveStatus("saved");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Steuerberater-Daten konnten nicht gespeichert werden.");

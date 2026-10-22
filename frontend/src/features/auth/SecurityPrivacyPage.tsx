@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { mitBestaetigung } from "./bestaetigung";
 import { PageHeader } from "../../components/PageHeader";
 import { PageState } from "../../components/PageState";
 import { formatDate } from "../../lib/format";
@@ -206,7 +207,7 @@ export function SecurityPrivacyPage({ accessToken, onBack, onSecurityInvalidated
     setBusy("export");
     setError("");
     try {
-      const blob = await fetchDatenexport(accessToken);
+      const blob = await mitBestaetigung(accessToken, "gesamtexport", (h) => fetchDatenexport(accessToken, h));
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;

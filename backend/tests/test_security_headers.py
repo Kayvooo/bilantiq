@@ -177,7 +177,10 @@ def test_produktion_ohne_trusted_hosts_startet_nicht():
 
 def test_produktion_mit_echter_domain_und_entwicklung_ohne_angabe_starten():
     ok = _starte_mit(
-        {"APP_ENV": "production", "TRUSTED_HOSTS_RAW": "api.bilantiq.de", "CORS_ALLOWED_ORIGINS_RAW": "https://bilantiq.de"},
+        {
+            "APP_ENV": "production", "TRUSTED_HOSTS_RAW": "api.bilantiq.de", "CORS_ALLOWED_ORIGINS_RAW": "https://bilantiq.de",
+            "MFA_PFLICHT": "owner",  # die Testumgebung setzt "aus", das in Produktion verboten ist (siehe test_mfa_pflicht.py)
+        },
         "from app.main import app",
     )
     assert ok.returncode == 0, ok.stderr[-2000:]

@@ -9,6 +9,9 @@ eine neue Route, die hier nicht passt, lässt die Tests rot werden und zwingt zu
 
 ## Spalten
 
+**MFA-Pflicht (seit F3):** Bei `angemeldet` und `Owner` prüft `require_full_auth` zusätzlich, ob die aktuelle Mandantenrolle
+laut `MFA_PFLICHT` MFA braucht und ob das Konto sie eingerichtet hat; sonst 401. Siehe `docs/specs/mfa-pflicht.md`.
+
 - **Auth:** `angemeldet` = `require_full_auth` (JWT, Scope `full`, Sitzung nicht widerrufen, `security_version` aktuell,
   Mitgliedschaft im Mandanten des Tokens); `Owner` = zusätzlich Mandantenrolle `owner` (Rolle wird je Aufruf aus der Datenbank
   gelesen, nicht aus dem JWT); `Pre-MFA-Token` = nur der Zwischenschritt nach der Passwortprüfung; `öffentlich` = keine Anmeldung.
@@ -74,16 +77,17 @@ Reihenfolge nach Pfad. Gleiche Zeilen mit unterschiedlichen Methoden sind getren
 | `GET` | `/auth/briefpapier` | angemeldet | ja |  |
 | `POST` | `/auth/briefpapier` | angemeldet | ja | Magic-Bytes + Pixelgrenze (Upload-Härtung) |
 | `DELETE` | `/auth/briefpapier/{briefpapier_id}` | angemeldet | ja |  |
-| `GET` | `/auth/datenexport` | **Owner** | ja | enthält alle Mandantendaten |
+| `GET` | `/auth/datenexport` | **Owner** | ja | enthält alle Mandantendaten; **frische MFA-Bestätigung** (`gesamtexport`, HTTP 428 ohne) |
 | `GET` | `/auth/einladungen` | **Owner** | ja |  |
-| `POST` | `/auth/einladungen` | **Owner** | ja |  |
+| `POST` | `/auth/einladungen` | **Owner** | ja | **frische MFA-Bestätigung** (`benutzer_verwalten`) |
 | `POST` | `/auth/einladungen/{einladung_id}/widerrufen` | **Owner** | ja |  |
 | `POST` | `/auth/login` | **öffentlich** | ja | IP-Limit 30/5 min; Konto-Sperre 5 Fehlversuche/15 min; generische Fehlermeldung, Dummy-Hash gegen Zeit-Enumeration |
 | `POST` | `/auth/login/mfa` | Pre-MFA-Token | ja | Pre-MFA-Token; gemeinsamer Fehlversuchszähler; IP-Limit; TOTP-Code nur einmal pro Zeitschritt (Replay-Schutz) |
 | `POST` | `/auth/login/mfa/wiederherstellungscode` | Pre-MFA-Token | ja | Pre-MFA-Token; Einmalcode statt TOTP, wird verbraucht; Fehlversuche im gemeinsamen Zähler; IP-Limit; Audit `mfa_wiederherstellungscode_verwendet` |
+| `POST` | `/auth/bestaetigung` | angemeldet | ja | stellt das Bestätigungs-Token aus (TOTP oder Wiederherstellungscode, 5 Minuten, an Sitzung und Aktionsklasse gebunden); IP-Limit, Fehlversuchszähler, Audit `bestaetigung_erteilt` ohne Code |
 | `POST` | `/auth/logout` | angemeldet | ja | beendet nur die aktuelle Sitzung |
 | `GET` | `/auth/mandant` | angemeldet | ja |  |
-| `PATCH` | `/auth/mandant` | angemeldet | ja | Firmen-/Bankdaten nur Owner; Design-Felder alle Mitglieder |
+| `PATCH` | `/auth/mandant` | angemeldet | ja | Firmen-/Bankdaten nur Owner; Design-Felder alle Mitglieder; **IBAN/BIC-Änderung mit frischer MFA-Bestätigung** (`iban_aendern`) |
 | `DELETE` | `/auth/mandant/logo` | angemeldet | ja |  |
 | `GET` | `/auth/mandant/logo` | angemeldet | ja |  |
 | `POST` | `/auth/mandant/logo` | angemeldet | ja | Magic-Bytes + Pixelgrenze (Upload-Härtung) |
@@ -93,8 +97,8 @@ Reihenfolge nach Pfad. Gleiche Zeilen mit unterschiedlichen Methoden sind getren
 | `POST` | `/auth/mfa/setup` | Pre-MFA-Token | ja | Pre-MFA-Token |
 | `POST` | `/auth/mfa/verify` | Pre-MFA-Token | ja | Pre-MFA-Token; Fehlversuchszähler; IP-Limit; Replay-Schutz; liefert bei der ersten Aktivierung einmalig 10 Wiederherstellungscodes |
 | `GET` | `/auth/mitglieder` | angemeldet | ja | alle Mitglieder sehen die E-Mail-Adressen der Kollegen |
-| `POST` | `/auth/mitglieder` | **Owner** | ja |  |
-| `POST` | `/auth/mitglieder/{user_id}/entfernen` | **Owner** | ja |  |
+| `POST` | `/auth/mitglieder` | **Owner** | ja | **frische MFA-Bestätigung** (`benutzer_verwalten`) |
+| `POST` | `/auth/mitglieder/{user_id}/entfernen` | **Owner** | ja | **frische MFA-Bestätigung** (`benutzer_verwalten`) |
 | `POST` | `/auth/passwort/aendern` | angemeldet | ja | Fehlversuchszähler; beendet alle Sitzungen |
 | `POST` | `/auth/passwort/vergessen` | **öffentlich** | n/a | antwortet immer gleich (202), keine Konto-Enumeration; IP-Limit 10/h, Konto-Limit 3/h; Antwortzeit aufgefüllt, Mail nach der Antwort |
 | `POST` | `/auth/passwort/zuruecksetzen` | **öffentlich** | ja | Einmal-Token (256 Bit, HMAC gespeichert, 60 min) statt Anmeldung; IP-Limit 20/15 min; beendet alle Sitzungen, MFA bleibt aktiv |
@@ -185,7 +189,7 @@ Reihenfolge nach Pfad. Gleiche Zeilen mit unterschiedlichen Methoden sind getren
 | `GET` | `/security` | angemeldet | ja |  |
 | `POST` | `/security/email/aenderung-bestaetigen` | angemeldet | ja |  |
 | `POST` | `/security/email/aenderung-starten` | angemeldet | ja | Passwort, Fehlversuchszähler, 5 Mails/h pro Konto |
-| `POST` | `/security/mfa/deaktivieren` | angemeldet | ja | Passwort + Code (TOTP oder Wiederherstellungscode), Fehlversuchszähler, Replay-Schutz, beendet alle Sitzungen, löscht die Wiederherstellungscodes |
+| `POST` | `/security/mfa/deaktivieren` | angemeldet | ja | Passwort + Code (TOTP oder Wiederherstellungscode), Fehlversuchszähler, Replay-Schutz, beendet alle Sitzungen, löscht die Wiederherstellungscodes; **für Rollen mit MFA-Pflicht gesperrt (403)** |
 | `POST` | `/security/mfa/einrichten` | angemeldet | ja |  |
 | `POST` | `/security/mfa/neu-einrichten` | angemeldet | ja | Passwort + Code (TOTP oder Wiederherstellungscode), Fehlversuchszähler, Replay-Schutz |
 | `POST` | `/security/mfa/neu-einrichten/bestaetigen` | angemeldet | ja | bei der ersten Aktivierung einmalig 10 Wiederherstellungscodes in der Antwort |

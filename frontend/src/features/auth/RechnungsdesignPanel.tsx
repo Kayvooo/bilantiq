@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { mitBestaetigung } from "./bestaetigung";
 import { PageState } from "../../components/PageState";
 import { PillAuswahl } from "../../components/PillAuswahl";
 import { PdfPreviewFrame, type ZoomStufe } from "../../components/PdfPreviewFrame";
@@ -242,7 +243,7 @@ export function RechnungsdesignPanel({ accessToken }: Props) {
     setSaveStatus("saving");
     setError("");
     try {
-      const mandant = await updateMandant(accessToken, {
+      const mandant = await mitBestaetigung(accessToken, "iban_aendern", (h) => updateMandant(accessToken, {
         rechnungsvorlage: form.rechnungsvorlage,
         akzentfarbe: form.akzentfarbe,
         fusszeile_text: form.fusszeile_text,
@@ -262,7 +263,7 @@ export function RechnungsdesignPanel({ accessToken }: Props) {
         zeige_fusszeile: form.zeige_fusszeile,
         zeige_seitenzahlen: form.zeige_seitenzahlen,
         zeige_falz_lochmarken: form.zeige_falz_lochmarken,
-      });
+      }, h));
       setForm(toForm(mandant));
       setSaveStatus("saved");
     } catch (err) {

@@ -18,6 +18,10 @@ os.environ.setdefault("STORAGE_DIR", tempfile.mkdtemp(prefix="bilantiq-test-"))
 # Die Mandantentrennungs- und Auth-Tests registrieren mehrere Firmen. Der echte Standard ist "first_account"
 # (tests/test_selbst_hosten.py prueft ihn und die anderen Modi ausdruecklich).
 os.environ.setdefault("REGISTRATION_MODE", "open")
+# Der echte Standard ist MFA_PFLICHT=owner (docs/specs/mfa-pflicht.md). Fast alle Tests legen Konten an und arbeiten sofort mit
+# der Sitzung; sie laufen deshalb mit "aus" (nur unter APP_ENV=development erlaubt). Die Pflicht selbst, der
+# Einrichtungsweg und die Bestaetigung pruefen tests/test_mfa_pflicht.py und tests/test_autorisierung.py ausdruecklich.
+os.environ.setdefault("MFA_PFLICHT", "aus")
 os.environ.setdefault(
     "DATA_ENCRYPTION_KEYS",
     "v1:" + base64.urlsafe_b64encode(secrets.token_bytes(32)).decode().rstrip("="),
