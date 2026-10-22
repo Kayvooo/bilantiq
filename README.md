@@ -53,26 +53,41 @@ Mitmachen: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Entwicklung
 
-Backend (Python 3.13 oder 3.14):
+Backend (Python 3.13 oder 3.14), Linux/macOS:
 
 ```bash
-sudo apt install tesseract-ocr tesseract-ocr-deu poppler-utils   # nur für die Belegerfassung nötig
 cd backend
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
-cp .env.example .env   # Secrets erzeugen und eintragen, Anleitung in den Kommentaren
+python scripts/dev_env_erzeugen.py   # legt .env mit frischen Schlüsseln an (nur für lokal)
 uvicorn app.main:app --reload
-pytest -q              # SQLite, kein Postgres nötig; die Postgres-RLS-Tests brauchen TEST_DATABASE_ADMIN_URL
+pytest -q                            # SQLite, kein Postgres nötig; die Postgres-RLS-Tests brauchen TEST_DATABASE_ADMIN_URL
 ```
 
-Frontend:
+Windows (PowerShell):
+
+```powershell
+cd backend
+py -m venv .venv
+.venv\Scripts\Activate.ps1          # bei einer Fehlermeldung zuerst: Set-ExecutionPolicy -Scope Process Bypass
+pip install -r requirements-dev.txt
+python scripts/dev_env_erzeugen.py
+uvicorn app.main:app --reload
+```
+
+Die API läuft dann auf `http://localhost:8000`, die interaktive API-Doku unter `/docs`. Für die Belegerfassung (OCR) werden
+zusätzlich Tesseract mit deutschem Sprachpaket und Poppler gebraucht (Linux: `sudo apt install tesseract-ocr tesseract-ocr-deu
+poppler-utils`); ohne sie funktioniert alles andere.
+
+Frontend (zweites Terminal, Node.js 22 oder neuer):
 
 ```bash
 cd frontend
 npm ci
-cp .env.example .env.local   # VITE_API_BASE_URL ggf. anpassen
-npm run dev
+npm run dev          # öffnet http://localhost:5173; die API-Adresse steht in frontend/.env.example
 ```
+
+Beim ersten Aufruf legen Sie das erste Konto an (Registrierung ist im Standard nur für das erste Konto offen).
 
 Vor einem Pull Request: `npx tsc -b --noEmit`, `npm run lint`, `npm run build` und `pytest -q`. Die lokale Dev-Datenbank wird
 per `create_all()` erzeugt und ändert bestehende Spalten nicht: bei Schemaänderungen die Datei löschen. Produktion nutzt
