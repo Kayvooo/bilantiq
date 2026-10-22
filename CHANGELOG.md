@@ -5,6 +5,13 @@ Alle nennenswerten Änderungen an Bilantiq. Das Format orientiert sich an
 der Git-Historie (Commits vom 5. September bis 14. Oktober 2026). Es wurde **kein Tag gesetzt**; Versionsnummer
 und Datum legt der Owner beim Release fest (Release-Plan 1.9).
 
+## [Unveröffentlicht] - Heimserver-Betrieb über VPN
+
+- **Neu:** `docker-compose.home.yml`, `Caddyfile.home` und `.env.home.example` für den Betrieb auf einem eigenen Rechner, erreichbar nur
+  über ein VPN (z. B. Tailscale). Caddy lauscht nur auf `127.0.0.1:8080` ohne TLS, Oberfläche und API liegen unter einer Adresse
+  (`/api`). Anleitung: `docs/heimserver-tailscale.md`. Noch nicht auf einem echten Docker-Host ausprobiert.
+- `frontend/Dockerfile` nimmt die Caddyfile über das Build-Argument `CADDYFILE` (Standard unverändert `Caddyfile`).
+
 ## [Unveröffentlicht] - Bezahlfunktion entfernt
 
 ### Entfernt

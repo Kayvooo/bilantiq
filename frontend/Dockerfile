@@ -17,4 +17,6 @@ RUN npm run build
 # Let's Encrypt) und proxyt die API auf den backend-Container.
 FROM caddy:2-alpine
 COPY --from=build /app/dist /srv
-COPY Caddyfile /etc/caddy/Caddyfile
+# Standard ist die Caddyfile fuer das oeffentliche Internet; docker-compose.home.yml waehlt Caddyfile.home.
+ARG CADDYFILE=Caddyfile
+COPY ${CADDYFILE} /etc/caddy/Caddyfile

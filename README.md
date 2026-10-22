@@ -105,7 +105,7 @@ ausschließlich Alembic-Migrationen (`backend/migrations/`).
 
 ## Betrieb
 
-Produktions-Stack, Secrets, Backups, Restore, Updates und Notfälle: [docs/self-hosting.md](docs/self-hosting.md),
+Produktions-Stack, Secrets, Backups, Restore, Updates und Notfälle: [docs/self-hosting.md](docs/self-hosting.md), [docs/heimserver-tailscale.md](docs/heimserver-tailscale.md) (zu Hause hinter einem VPN),
 [docs/backup-restore.md](docs/backup-restore.md), [docs/rollback.md](docs/rollback.md),
 [docs/security-production.md](docs/security-production.md), [docs/betrieb-runbook.md](docs/betrieb-runbook.md),
 [docs/incident-response.md](docs/incident-response.md). Die Betriebs- und Datenschutzdokumente sind Entwürfe, nicht rechtlich

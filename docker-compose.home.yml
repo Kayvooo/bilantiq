@@ -1,0 +1,106 @@
+# Heimserver-Stack fuer EINE Person oder einen kleinen Kreis, erreichbar nur ueber ein VPN (z. B. Tailscale).
+# Anleitung: docs/heimserver-tailscale.md. Unterschiede zu docker-compose.prod.yml:
+#   - Kein oeffentlicher Zugang: Caddy lauscht nur auf 127.0.0.1:8080 (kein TLS, kein Let's Encrypt, keine Ports 80/443).
+#     HTTPS und Zugang von aussen kommen vom VPN-Dienst davor ("tailscale serve").
+#   - Oberflaeche und API unter einer Adresse (Caddyfile.home): "/" ist die Oberflaeche, "/api" das Backend.
+#   - Die Konfiguration steht in .env.home (Vorlage: .env.home.example), nicht in .env.prod.
+#
+# EIGENER SPEICHER: Zwei Docker-Volumes halten ALLE Daten dieser Instanz:
+#   postgres_data  die Datenbank
+#   backend_data   Belege, Logos, Briefpapier, Kontoauszuege, Altrechnungs-Archiv (STORAGE_DIR=/app/data)
+# "docker compose down -v" loescht beide Volumes unwiderruflich. Backups: scripts/backup.sh, siehe docs/self-hosting.md.
+name: bilantiq
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    env_file: .env.home
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file: .env.home
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:size=128m,noexec,nosuid,nodev
+    volumes:
+      # Alternative: einen Host-Ordner einhaengen, z. B. /srv/bilantiq/daten:/app/data. Der Ordner muss dem Benutzer mit
+      # UID 1000 gehoeren (chown 1000:1000), sonst bricht die Startpruefung mit einer Meldung ab.
+      - backend_data:/app/data
+    secrets:
+      - database_url
+      - jwt_secret
+      - field_encryption_key
+      - email_lookup_secret
+      - data_encryption_keys
+      - blind_index_secret
+      - smtp_password
+    networks:
+      - web
+      - backend_internal
+
+  caddy:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        CADDYFILE: Caddyfile.home
+        # Relativ: Die Oberflaeche ruft die API unter derselben Adresse auf ("/api"), siehe Caddyfile.home.
+        VITE_API_BASE_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      # Nur auf dem eigenen Rechner. NIE auf 0.0.0.0 oder ohne Adresse veroeffentlichen: Hier gibt es kein TLS.
+      - "127.0.0.1:8080:80"
+    networks:
+      - web
+
+volumes:
+  postgres_data:
+  backend_data:
+
+networks:
+  web:
+  backend_internal:
+    internal: true
+
+secrets:
+  postgres_password:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/postgres_password
+  database_url:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/database_url
+  jwt_secret:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/jwt_secret
+  field_encryption_key:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/field_encryption_key
+  email_lookup_secret:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/email_lookup_secret
+  data_encryption_keys:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/data_encryption_keys
+  blind_index_secret:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/blind_index_secret
+  smtp_password:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/smtp_password

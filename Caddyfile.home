@@ -1,0 +1,44 @@
+# Reverse-Proxy fuer den Heimserver-Betrieb (docker-compose.home.yml, Anleitung: docs/heimserver-tailscale.md).
+#
+# Hier gibt es KEIN TLS und kein Let's Encrypt: Caddy lauscht nur auf Port 80 im Container, der Compose-Stack
+# veroeffentlicht ihn ausschliesslich auf 127.0.0.1:8080 des eigenen Rechners. Die Verschluesselung (HTTPS) und der
+# Zugang von aussen kommen von einem VPN-Dienst davor, z. B. "tailscale serve". Ohne diesen Dienst ist die Instanz nur auf
+# dem Rechner selbst erreichbar.
+#
+# Oberflaeche und API liegen unter EINER Adresse: "/" ist die Oberflaeche, "/api/..." wird an das Backend weitergereicht
+# (Praefix entfernt). Dadurch braucht die Oberflaeche keinen festen Hostnamen (VITE_API_BASE_URL=/api) und es gibt keine
+# CORS-Fragen.
+{
+	auto_https off
+	admin off
+}
+
+:80 {
+	encode gzip
+	header -Server
+
+	handle_path /api/* {
+		reverse_proxy backend:8000
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+
+		# PWA: Der Service Worker darf nie veraltet aus dem Cache kommen. Gehashte Vite-Dateien sind unveraenderlich.
+		@sw path /sw.js
+		header @sw Cache-Control "no-cache"
+		@manifest path /brand/site.webmanifest
+		header @manifest Content-Type "application/manifest+json"
+		@hashed path /assets/*
+		header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+		header {
+			X-Content-Type-Options "nosniff"
+			X-Frame-Options "DENY"
+			Referrer-Policy "no-referrer"
+			Content-Security-Policy "default-src 'self'; connect-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+		}
+	}
+}
