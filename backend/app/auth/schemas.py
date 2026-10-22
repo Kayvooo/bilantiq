@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, EmailStr, Field
@@ -23,9 +24,23 @@ class RegisterRequest(BaseModel):
 
 
 class PreAuthResponse(BaseModel):
-    status: str  # "mfa_optional" (ohne MFA angemeldet, access_token gesetzt) | "mfa_required"
+    # "mfa_optional": ohne MFA angemeldet, access_token gesetzt | "mfa_required": Code erforderlich |
+    # "mfa_einrichtung_erforderlich": MFA ist Pflicht und noch nicht eingerichtet, nur pre_auth_token (docs/specs/mfa-pflicht.md)
+    status: str
     pre_auth_token: str
     access_token: str | None = None
+
+
+class BestaetigungRequest(BaseModel):
+    """Frische MFA-Bestaetigung fuer eine sensible Aktion (docs/specs/mfa-pflicht.md). ``code``: TOTP-Code oder Wiederherstellungscode."""
+
+    aktion: Literal["iban_aendern", "benutzer_verwalten", "gesamtexport"]
+    code: str = Field(min_length=6, max_length=32)
+
+
+class BestaetigungResponse(BaseModel):
+    bestaetigung_token: str
+    gueltig_bis: datetime
 
 
 class MfaSetupResponse(BaseModel):

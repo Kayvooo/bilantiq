@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.security import decode_access_token
 from app.db import get_db, set_rls_mandant
 from app.auth.models import Mitgliedschaft, User
+from app.auth.mfa_richtlinie import MFA_EINRICHTUNG_ERFORDERLICH, mfa_erforderlich
 from app.auth.security_service import session_is_valid
 
 _bearer = HTTPBearer(auto_error=False)
@@ -72,6 +73,11 @@ def require_full_auth(
     )
     if mitgliedschaft is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Sitzung ist nicht mehr gueltig.")
+    # MFA-Pflicht (docs/specs/mfa-pflicht.md): Rolle und MFA-Stand stammen aus der Datenbank, nicht aus dem Token. Das trifft
+    # auch Sitzungen, die vor der Einfuehrung der Pflicht ausgestellt wurden. 401 (nicht 403), damit das Frontend die
+    # Sitzung verwirft und zur Anmeldung leitet, dort beginnt die Einrichtung.
+    if mfa_erforderlich(mitgliedschaft.rolle) and not user.mfa_enabled:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=MFA_EINRICHTUNG_ERFORDERLICH)
     return payload
 
 

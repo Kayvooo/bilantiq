@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 
 from app.auth import bruteforce, mfa_service
 from app.auth.dependencies import require_full_auth
-from app.auth.models import AuthSession, EmailAenderung, User
+from app.auth.mfa_richtlinie import mfa_erforderlich
+from app.auth.models import AuthSession, EmailAenderung, Mitgliedschaft, User
 from app.auth.security_service import invalidate_security_context, revoke_sessions
 from app.config import settings
 from app.core import mailer, ratelimit
@@ -243,6 +244,18 @@ def deactivate_mfa(
     user = db.get(User, auth["sub"])
     if user is None or not user.mfa_enabled or user.mfa_secret_encrypted is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="MFA ist nicht eingerichtet.")
+    mitgliedschaft = (
+        db.query(Mitgliedschaft)
+        .filter(Mitgliedschaft.user_id == user.id, Mitgliedschaft.mandant_id == auth["mandant_id"])
+        .first()
+    )
+    if mitgliedschaft is not None and mfa_erforderlich(mitgliedschaft.rolle):
+        # Pflicht-MFA (docs/specs/mfa-pflicht.md): Abschalten waere nur ein Umweg ueber die erzwungene Neueinrichtung.
+        # Ein anderes Geraet geht ueber /security/mfa/neu-einrichten.
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Für deine Rolle ist die Zwei-Faktor-Anmeldung verpflichtend und kann nicht abgeschaltet werden. Du kannst sie neu einrichten.",
+        )
     _pruefe_passwort_und_code(db, user, payload, auth["mandant_id"])
 
     user.mfa_enabled = False

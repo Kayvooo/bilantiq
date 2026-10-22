@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { mitBestaetigung } from "./bestaetigung";
 import { PageHeader } from "../../components/PageHeader";
 import { PageState } from "../../components/PageState";
 import { formatDate } from "../../lib/format";
@@ -52,7 +53,7 @@ export function BenutzerPage({ accessToken, onBack }: Props) {
     setError("");
     setNeuerCode(null);
     try {
-      const einladung = await createEinladung(accessToken, "mitglied");
+      const einladung = await mitBestaetigung(accessToken, "benutzer_verwalten", (h) => createEinladung(accessToken, "mitglied", h));
       setNeuerCode(einladung.code);
       await load();
     } catch (err) {
@@ -79,7 +80,7 @@ export function BenutzerPage({ accessToken, onBack }: Props) {
     setBusyId(userId);
     setError("");
     try {
-      await entferneMitglied(accessToken, userId);
+      await mitBestaetigung(accessToken, "benutzer_verwalten", (h) => entferneMitglied(accessToken, userId, h));
       await load();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Entfernen ist fehlgeschlagen.");
@@ -94,7 +95,7 @@ export function BenutzerPage({ accessToken, onBack }: Props) {
     setError("");
     setAngelegtesMitglied(null);
     try {
-      const mitglied = await erstelleMitgliedDirekt(accessToken, neueEmail, neueRolle);
+      const mitglied = await mitBestaetigung(accessToken, "benutzer_verwalten", (h) => erstelleMitgliedDirekt(accessToken, neueEmail, neueRolle, h));
       setAngelegtesMitglied(mitglied);
       setNeueEmail("");
       setAnlegeStatus("idle");

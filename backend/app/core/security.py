@@ -52,6 +52,7 @@ def create_token(
     minutes: int | None = None,
     session_id: str | None = None,
     security_version: int | None = None,
+    zusatz: dict | None = None,
 ) -> str:
     """Pre-MFA tokens bleiben kurzlebig; Full-Tokens sind zusaetzlich serverseitig widerrufbar."""
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=minutes or settings.access_token_minutes)
@@ -60,6 +61,8 @@ def create_token(
         payload["sid"] = session_id
     if security_version is not None:
         payload["sv"] = security_version
+    if zusatz:
+        payload.update({k: v for k, v in zusatz.items() if k not in payload})
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 

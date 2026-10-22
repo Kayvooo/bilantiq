@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { mitBestaetigung } from "./bestaetigung";
 import { PageHeader } from "../../components/PageHeader";
 import { PageState } from "../../components/PageState";
 import { useRollenStatus } from "../../lib/useIstInhaber";
@@ -47,7 +48,7 @@ export function MandantSettingsPage({ accessToken, onBack }: Props) {
     setSaveStatus("saving");
     setError("");
     try {
-      setForm(toForm(await updateMandant(accessToken, form)));
+      setForm(toForm(await mitBestaetigung(accessToken, "iban_aendern", (h) => updateMandant(accessToken, form, h))));
       setSaveStatus("saved");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Firmendaten konnten nicht gespeichert werden.");

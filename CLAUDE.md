@@ -26,11 +26,12 @@ Mitmachen: `CONTRIBUTING.md`. Betrieb: `docs/self-hosting.md`.
 - Mandantentrennung: Postgres Row-Level-Security (`app/core/rls.py`, `docs/specs/rls-postgres.md`) plus Anwendungs-Ebene als
   Ersatz für SQLite. Neue Tabellen mit Mandantenbezug brauchen RLS und einen Test. Die Postgres-Tests laufen nur mit
   `TEST_DATABASE_ADMIN_URL` (`backend/scripts/rls_testlauf.sh`).
-- Sicherheit: Argon2id, serverseitig widerrufbare Sitzungen (`security_version`), optionale MFA (TOTP mit Wiederherstellungs-
-  codes), AES-256-GCM-Envelope-Verschlüsselung sensibler Felder und Dateien mit versioniertem Schlüsselbund
+- Sicherheit: Argon2id, serverseitig widerrufbare Sitzungen (`security_version`), MFA (TOTP mit Wiederherstellungs-
+  codes, Pflicht für Owner), AES-256-GCM-Envelope-Verschlüsselung sensibler Felder und Dateien mit versioniertem Schlüsselbund
   (`app/core/key_management.py`), Schlüsselrotation per `backend/scripts/rotate_encryption.py`, append-only Audit-Log.
   Autorisierungsübersicht: `docs/autorisierungs-matrix.md`.
 - Registrierung: `REGISTRATION_MODE` = `first_account` (Standard), `closed` oder `open` (`app/auth/routes.py`).
+- MFA-Pflicht: `MFA_PFLICHT` = `owner` (Standard), `alle` oder `aus` (nur `APP_ENV=development`; die Tests laufen mit `aus`). Frische Bestätigung sensibler Aktionen: `app/auth/bestaetigung.py`, Spec `docs/specs/mfa-pflicht.md`.
 - Dateispeicher: alles unter `STORAGE_DIR` (`app/core/storage_check.py` prüft beim Start). E-Mail (SMTP) ist optional.
 - XRechnung: Erzeugung in `app/invoices/e_invoice.py`, Prüfung in `app/invoices/e_invoice_validation.py`
   (`XRECHNUNG_PRUEFUNG`: `aus`, `warnen` als Standard, `blockieren`). Die Prüfregeln liegen nicht im Repository, sondern werden

@@ -38,6 +38,7 @@ import { useAlertSichtbar } from "../../lib/alertSichtbar";
 import { setUnauthorizedHandler } from "../../lib/session";
 import { useRollenStatus } from "../../lib/useIstInhaber";
 import { BenutzerPage } from "./BenutzerPage";
+import { MfaEinrichtungPflicht } from "./MfaEinrichtungPflicht";
 import { Dashboard } from "./Dashboard";
 import { markiereMfaHinweis } from "../../lib/mfaHinweis";
 import { LoginForm } from "./LoginForm";
@@ -87,6 +88,7 @@ export type Step =
   | { name: "restoring"; accessToken: string }
   | { name: "restore-error"; accessToken: string; message: string }
   | { name: "mfa-challenge"; preAuthToken: string }
+  | { name: "mfa-einrichtung"; preAuthToken: string }
   | { name: "home"; accessToken: string }
   | { name: "assistant"; accessToken: string }
   | { name: "invoices"; accessToken: string; fokusId?: string; aktion?: "neu"; ansicht?: "altsystem" }
@@ -241,6 +243,9 @@ export function AuthFlow() {
       markiereMfaHinweis();
       persistToken(result.access_token);
       setStep({ name: "home", accessToken: result.access_token });
+    } else if (result.status === "mfa_einrichtung_erforderlich") {
+      // Pflicht-MFA noch nicht eingerichtet: nur der Einrichtungsbildschirm, keine Sitzung und kein Zugriff auf Daten.
+      setStep({ name: "mfa-einrichtung", preAuthToken: result.pre_auth_token });
     } else {
       setStep({ name: "mfa-challenge", preAuthToken: result.pre_auth_token });
     }
@@ -417,6 +422,14 @@ export function AuthFlow() {
         <MfaAnmeldung
           preAuthToken={step.preAuthToken}
           onVerified={(accessToken) => { persistToken(accessToken); setStep({ name: "home", accessToken }); }}
+        />
+      );
+    case "mfa-einrichtung":
+      return preAuthShell(
+        <MfaEinrichtungPflicht
+          preAuthToken={step.preAuthToken}
+          onFertig={(accessToken) => { persistToken(accessToken); setStep({ name: "home", accessToken }); }}
+          onZurAnmeldung={() => { clearStoredToken(); setStep({ name: "login" }); }}
         />
       );
     case "home":

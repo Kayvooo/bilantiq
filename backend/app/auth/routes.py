@@ -4,15 +4,18 @@ import uuid
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Request, UploadFile, status
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
-from app.auth import bruteforce, mfa_service, passwort_reset
+from app.auth import bestaetigung, bruteforce, mfa_service, passwort_reset
 from app.auth.dependencies import ist_owner, require_full_auth, require_owner, require_pre_mfa
+from app.auth.mfa_richtlinie import mfa_erforderlich
 from app.auth.models import AuthSession, Briefpapier, Einladung, Mandant, Mitgliedschaft, PasswortResetToken, User
 from app.auth.security_service import create_full_session, invalidate_security_context
 from app.auth.schemas import (
+    BestaetigungRequest,
+    BestaetigungResponse,
     BriefpapierResponse,
     EinladungCreate,
     EinladungResponse,
@@ -97,14 +100,26 @@ def _aware_utc(dt: datetime | None) -> datetime | None:
 
 
 def _ohne_mfa_anmelden(db: Session, request: Request, user: User, mandant_id: str) -> PreAuthResponse:
-    """MFA ist optional: Wer sie nicht eingerichtet hat, bekommt direkt eine volle Sitzung. Das Frontend weist
-    dringend auf die Einrichtung hin. Das pre_mfa-Token erlaubt weiterhin nur /mfa/setup und /mfa/verify."""
+    """Konto ohne eingerichtetes MFA (docs/specs/mfa-pflicht.md).
+
+    Rolle mit MFA-Pflicht (Standard: owner): KEINE volle Sitzung. Es gibt nur das pre_mfa-Token, das ausschliesslich
+    /auth/mfa/setup und /auth/mfa/verify oeffnet; erst /auth/mfa/verify stellt die volle Sitzung aus.
+    Rolle ohne Pflicht: wie bisher eine volle Sitzung, das Frontend empfiehlt die Einrichtung dringend."""
+    mitgliedschaft = (
+        db.query(Mitgliedschaft)
+        .filter(Mitgliedschaft.user_id == user.id, Mitgliedschaft.mandant_id == mandant_id)
+        .first()
+    )
+    pre_auth_token = create_token(user_id=user.id, scope="pre_mfa", mandant_id=mandant_id, minutes=15, security_version=user.security_version)
+    if mitgliedschaft is not None and mfa_erforderlich(mitgliedschaft.rolle):
+        record_audit(db, aktion="mfa_einrichtung_erforderlich", mandant_id=mandant_id, user_id=user.id, kontext=mitgliedschaft.rolle)
+        db.commit()
+        return PreAuthResponse(status="mfa_einrichtung_erforderlich", pre_auth_token=pre_auth_token)
     _, access_token = create_full_session(
         db, user=user, mandant_id=mandant_id, user_agent=request.headers.get("user-agent"),
     )
     record_audit(db, aktion="sitzung_erstellt", mandant_id=mandant_id, user_id=user.id, kontext="ohne_mfa")
     db.commit()
-    pre_auth_token = create_token(user_id=user.id, scope="pre_mfa", mandant_id=mandant_id, minutes=15, security_version=user.security_version)
     return PreAuthResponse(status="mfa_optional", pre_auth_token=pre_auth_token, access_token=access_token)
 
 
@@ -369,6 +384,21 @@ def logout(token_payload: dict = Depends(require_full_auth), db: Session = Depen
         db.commit()
 
 
+@router.post("/bestaetigung", response_model=BestaetigungResponse)
+def bestaetigung_erteilen(
+    payload: BestaetigungRequest,
+    request: Request,
+    auth: dict = Depends(require_full_auth),
+    db: Session = Depends(get_db),
+) -> BestaetigungResponse:
+    """Frische MFA-Bestaetigung fuer eine sensible Aktionsklasse (docs/specs/mfa-pflicht.md). Das Token gilt nur fuer diese
+    Sitzung und Aktionsklasse und wenige Minuten. "Dieses Geraet merken" ersetzt sie nicht."""
+    ratelimit.begrenze_ip(request, "mfa", limit=MFA_CODE_PRO_IP[0], fenster_sekunden=MFA_CODE_PRO_IP[1])
+    token, gueltig_bis = bestaetigung.erteile_bestaetigung(db, auth, payload.aktion, payload.code)
+    db.commit()
+    return BestaetigungResponse(bestaetigung_token=token, gueltig_bis=gueltig_bis)
+
+
 @router.get("/me", response_model=MeResponse)
 def me(token_payload: dict = Depends(require_full_auth), db: Session = Depends(get_db)) -> MeResponse:
     mitgliedschaft = (
@@ -440,7 +470,12 @@ def get_mandant(auth=Depends(require_full_auth), db: Session = Depends(get_db)) 
 
 
 @router.patch("/mandant", response_model=MandantResponse)
-def update_mandant(payload: MandantUpdate, auth=Depends(require_full_auth), db: Session = Depends(get_db)) -> MandantResponse:
+def update_mandant(
+    payload: MandantUpdate,
+    auth=Depends(require_full_auth),
+    x_bestaetigung: str | None = Header(default=None, alias=bestaetigung.HEADER),
+    db: Session = Depends(get_db),
+) -> MandantResponse:
     """Stammdaten des eigenen Mandanten pflegen — u.a. USt-IdNr./Steuernummer, ohne die
     keine E-Rechnung erzeugt werden kann (siehe app/invoices/e_invoice.py)."""
     mandant = db.get(Mandant, auth["mandant_id"])
@@ -456,6 +491,9 @@ def update_mandant(payload: MandantUpdate, auth=Depends(require_full_auth), db: 
     ]  # unveraenderte Werte (das Design-Formular schickt IBAN/BIC mit) gelten nicht als Aenderung
     if geaenderte_stammdaten and not ist_owner(db, auth):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Firmen- und Bankdaten darf nur der Owner ändern.")
+    if {"iban", "bic"} & set(geaenderte_stammdaten):
+        # Eine umgeleitete IBAN steht auf jeder Rechnung: Auch mit gueltiger Sitzung ein frischer zweiter Faktor (F3).
+        bestaetigung.pruefe_bestaetigung(db, auth, "iban_aendern", x_bestaetigung)
     if updates.get("briefpapier_id"):
         briefpapier = db.get(Briefpapier, updates["briefpapier_id"])
         if briefpapier is None or briefpapier.mandant_id != mandant.id:
@@ -668,7 +706,7 @@ def request_deletion(
 
 
 @router.get("/datenexport")
-def datenexport(auth: dict = Depends(require_owner), db: Session = Depends(get_db)) -> Response:
+def datenexport(auth: dict = Depends(bestaetigung.verlange_bestaetigung("gesamtexport")), db: Session = Depends(get_db)) -> Response:
     """DSGVO-Datenauskunft/-export (Art. 15/20) als herunterladbare JSON-Datei.
 
     Owner-only: der Export enthaelt alle Mandantendaten inkl. aller Mitglieder und
@@ -700,7 +738,9 @@ def _einladung_response(einladung: Einladung) -> EinladungResponse:
 
 
 @router.post("/einladungen", response_model=EinladungResponse, status_code=status.HTTP_201_CREATED)
-def create_einladung(payload: EinladungCreate, auth=Depends(require_owner), db: Session = Depends(get_db)) -> EinladungResponse:
+def create_einladung(
+    payload: EinladungCreate, auth=Depends(bestaetigung.verlange_bestaetigung("benutzer_verwalten")), db: Session = Depends(get_db),
+) -> EinladungResponse:
     """Kein E-Mail-Versand -- der Code wird manuell weitergegeben (siehe Einladung-
     Docstring). Nur der Owner darf einladen, damit nicht jedes Mitglied beliebig
     weitere Zugaenge zum Mandanten erzeugen kann."""
@@ -736,7 +776,9 @@ def widerrufe_einladung(einladung_id: str, auth=Depends(require_owner), db: Sess
 
 
 @router.post("/mitglieder", response_model=MitgliedCreateResponse, status_code=status.HTTP_201_CREATED)
-def create_mitglied(payload: MitgliedCreate, auth=Depends(require_owner), db: Session = Depends(get_db)) -> MitgliedCreateResponse:
+def create_mitglied(
+    payload: MitgliedCreate, auth=Depends(bestaetigung.verlange_bestaetigung("benutzer_verwalten")), db: Session = Depends(get_db),
+) -> MitgliedCreateResponse:
     """Legt einen Nutzer direkt an, statt ueber einen Einladungscode (siehe
     create_einladung) -- der Owner setzt das Erstpasswort weiter, es gibt weiterhin
     keinen E-Mail-Versand im Projekt. Das Konto durchlaeuft beim ersten Login ganz
@@ -774,7 +816,9 @@ def list_mitglieder(auth=Depends(require_full_auth), db: Session = Depends(get_d
 
 
 @router.post("/mitglieder/{user_id}/entfernen", status_code=status.HTTP_204_NO_CONTENT)
-def entferne_mitglied(user_id: str, auth=Depends(require_owner), db: Session = Depends(get_db)) -> None:
+def entferne_mitglied(
+    user_id: str, auth=Depends(bestaetigung.verlange_bestaetigung("benutzer_verwalten")), db: Session = Depends(get_db),
+) -> None:
     if user_id == auth["sub"]:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Der Owner kann sich nicht selbst entfernen.")
     mitgliedschaft = (

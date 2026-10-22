@@ -76,6 +76,13 @@ class Settings(BaseSettings):
     ai_timeout_seconds: float = 30.0
     ai_api_key: str | None = None
 
+    # Zwei-Faktor-Pflicht, siehe docs/specs/mfa-pflicht.md. "owner" (Standard): Die Mandantenrolle owner arbeitet nur mit
+    # eingerichtetem MFA. "alle": jede Rolle. "aus": keine Pflicht, nur mit APP_ENV=development erlaubt (Tests, lokales
+    # Ausprobieren); in staging/production verweigert die App den Start.
+    mfa_pflicht: Literal["owner", "alle", "aus"] = "owner"
+    # Gueltigkeit einer frischen MFA-Bestaetigung fuer sensible Aktionen (IBAN, Benutzerverwaltung, Gesamtexport).
+    bestaetigung_minuten: int = 5
+
     # Pruefung erzeugter XRechnungen gegen die XRechnung-Regeln (siehe app/invoices/e_invoice_validation.py und
     # docs/xrechnung-validierung.md). "aus": keine Pruefung. "warnen": XML wird ausgeliefert, das Ergebnis steht in den
     # Antwort-Headern. "blockieren": ein Fehler oder fehlende Regeln stoppen die Auslieferung (HTTP 422).
@@ -153,6 +160,17 @@ class Settings(BaseSettings):
                 f"APP_ENV={self.app_env}: TRUSTED_HOSTS_RAW muss auf die echte(n) Domain(s) gesetzt sein "
                 "(z. B. api.example.org), nicht leer und nicht '*'."
             )
+        return self
+
+    @model_validator(mode="after")
+    def _mfa_pflicht_nur_in_entwicklung_aus(self) -> "Settings":
+        if self.mfa_pflicht == "aus" and self.app_env != "development":
+            raise ValueError(
+                f"APP_ENV={self.app_env}: MFA_PFLICHT=aus ist nur in der Entwicklung (APP_ENV=development) erlaubt. "
+                "Setzen Sie MFA_PFLICHT=owner (Standard) oder alle."
+            )
+        if not 1 <= self.bestaetigung_minuten <= 30:
+            raise ValueError("BESTAETIGUNG_MINUTEN muss zwischen 1 und 30 liegen.")
         return self
 
     @property

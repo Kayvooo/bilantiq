@@ -5,6 +5,16 @@ Alle nennenswerten Änderungen an Bilantiq. Das Format orientiert sich an
 der Git-Historie (Commits vom 5. September bis 14. Oktober 2026). Es wurde **kein Tag gesetzt**; Versionsnummer
 und Datum legt der Owner beim Release fest (Release-Plan 1.9).
 
+## [Unveröffentlicht] - Zwei-Faktor-Pflicht für Owner und frische Bestätigung (Sicherheitspaket F3)
+
+Spec: `docs/specs/mfa-pflicht.md`. **Das ändert das Standardverhalten bestehender Instanzen:**
+
+- **Owner brauchen MFA** (`MFA_PFLICHT=owner`, Standard; `alle` für jede Rolle; `aus` nur mit `APP_ENV=development`). Ein Owner ohne MFA bekommt nach dem Login nur den Einrichtungsbildschirm (`status: "mfa_einrichtung_erforderlich"`, kein `access_token`); fachliche Routen sind gesperrt, bis MFA eingerichtet ist.
+- **Update bestehender Instanzen:** Owner ohne MFA werden beim ersten Aufruf nach dem Update einmal abgemeldet (HTTP 401) und richten MFA beim nächsten Login ein. Keine Datenbankmigration nötig.
+- **MFA abschalten** ist für Pflichtrollen gesperrt (neu einrichten geht weiter). Der Betreiber-Reset (`konto_wiederherstellen --mfa-zuruecksetzen`) führt den Owner in die Neueinrichtung, nicht zu einem Zugang ohne MFA.
+- **Frische Bestätigung** (5 Minuten, `POST /auth/bestaetigung`, Header `X-Bestaetigung`) für IBAN/BIC-Änderung, Benutzerverwaltung (Einladung, Direktanlage, Entfernen) und Gesamtexport. Ohne Bestätigung HTTP 428. Neue Einstellung `BESTAETIGUNG_MINUTEN` (Standard 5).
+- Die Testumgebung setzt `MFA_PFLICHT=aus`; die Pflicht selbst deckt `backend/tests/test_mfa_pflicht.py` ab.
+
 ## [Unveröffentlicht] - Heimserver-Betrieb über VPN
 
 - **Neu:** `docker-compose.home.yml`, `Caddyfile.home` und `.env.home.example` für den Betrieb auf einem eigenen Rechner, erreichbar nur
