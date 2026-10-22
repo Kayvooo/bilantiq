@@ -5,6 +5,19 @@ Alle nennenswerten Änderungen an Bilantiq. Das Format orientiert sich an
 der Git-Historie (Commits vom 5. September bis 14. Oktober 2026). Es wurde **kein Tag gesetzt**; Versionsnummer
 und Datum legt der Owner beim Release fest (Release-Plan 1.9).
 
+## [Unveröffentlicht] - Datenbankrechte und Sicherheitsabnahme
+
+- Eigener einmaliger Migrationsdienst für beide Compose-Profile. Die API verwendet eine eingeschränkte Laufzeitrolle
+  und verweigert in staging/production den Start mit privilegierten DB-Rechten. Umstieg bestehender Installationen:
+  `docs/security-runtime.md`; Daten und Kryptoschlüssel bleiben erhalten.
+- Secret-Dateien bleiben 0600 und sind für die jeweils berechtigten Container lesbar; die Admin-URL wird nicht in die
+  API gemountet. SQL-Parameter werden in Fehlermeldungen der Anwendungs-Engine ausgeblendet.
+- CI-Audits schlagen bei Befunden/Scan-Fehlern fehl, Actions sind auf Commit-SHAs festgelegt. Neuer Workflow für
+  Image-SBOMs, Image-Schwachstellen und die tatsächliche Compose-Startkette. Erforderliche Checks müssen zusätzlich in
+  den Repository-Regeln hinterlegt werden. Docker-/Postgres-Abnahme dieser Änderungen steht bis zum CI-Lauf aus.
+- Claude-Arbeitsauftrag und vollständiger Restore-Abnahmeplan unter `docs/security-claude-auftrag.md` und
+  `docs/security-restore-abnahme.md`.
+
 ## [Unveröffentlicht] - Heimserver-Betrieb über VPN
 
 - **Neu:** `docker-compose.home.yml`, `Caddyfile.home` und `.env.home.example` für den Betrieb auf einem eigenen Rechner, erreichbar nur

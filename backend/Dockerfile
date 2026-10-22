@@ -35,8 +35,9 @@ USER app
 EXPOSE 8000
 
 # Zuerst der Speicher-Check (klare Meldung und Abbruch ohne Stacktrace, falls /app/data nicht beschreibbar ist),
-# dann die Datenbank auf den aktuellen Migrationsstand bringen (Postgres),
+# Migrationen laufen vorher im separaten Compose-Dienst "migrate" mit eigener Admin-Verbindung.
+# Die API prueft ihre eingeschraenkten Datenbankrechte und startet erst danach.
 # dann uvicorn hinter dem Reverse-Proxy (X-Forwarded-Proto/-For werden vertraut, da
 # nur der interne Caddy-Container das Backend erreicht). --no-server-header entfernt den
 # "Server: uvicorn"-Header (Software-Fingerabdruck).
-CMD ["sh", "-c", "python -m app.core.storage_check && alembic upgrade head && python scripts/reencrypt_storage.py && uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=* --no-server-header"]
+CMD ["sh", "-c", "python -m app.core.runtime_security && python -m app.core.storage_check && python scripts/reencrypt_storage.py && exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=* --no-server-header"]

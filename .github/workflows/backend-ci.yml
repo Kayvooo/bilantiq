@@ -1,5 +1,8 @@
 name: backend-ci
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   push:
@@ -20,8 +23,8 @@ jobs:
     env:
       DATABASE_URL: sqlite:///./ci_bilantiq.db
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.14"
       - run: pip install -r requirements-dev.txt
@@ -71,8 +74,8 @@ jobs:
       SMTP_USER: tests@example.invalid
       SMTP_PASSWORD: test-password
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.14"
       - run: pip install -r requirements-dev.txt
@@ -89,7 +92,7 @@ jobs:
         run: DATABASE_URL="$ADMIN_DB_URL" alembic upgrade head
       - name: Laufzeitrolle ohne BYPASSRLS anlegen
         run: >-
-          psql -q -d bq_test -v rolle=bilantiq_runtime -v passwort="'${RUNTIME_ROLE_PASSWORD}'"
+          psql -q -d bq_test -v rolle=bilantiq_runtime -v passwort="${RUNTIME_ROLE_PASSWORD}"
           -f scripts/runtime_rolle.sql
       - name: Testsuite als Laufzeitrolle (RLS aktiv)
         env:
@@ -110,8 +113,8 @@ jobs:
     env:
       DATABASE_URL: sqlite:///./ci_bilantiq_xr.db
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.14"
       - run: pip install -r requirements-dev.txt
@@ -136,7 +139,7 @@ jobs:
           tests/test_e_rechnung_beispielinstanzen.py
           tests/test_e_rechnung.py
 
-  # Rein informativ (blockiert nie): zeigt bekannte Schwachstellen in den gepinnten Abhaengigkeiten.
+  # Bekannte Schwachstellen oder ein fehlgeschlagener Scan lassen den Job fehlschlagen.
   # Bewertung und Behebung stehen in docs/lieferkette.md.
   pip-audit:
     runs-on: ubuntu-latest
@@ -144,11 +147,10 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.14"
       - run: pip install pip-audit==2.10.1
-      - name: pip-audit (nicht blockierend)
-        continue-on-error: true
+      - name: pip-audit (blockierend)
         run: pip-audit -r requirements-dev.txt | tee -a "$GITHUB_STEP_SUMMARY"

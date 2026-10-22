@@ -1,5 +1,24 @@
 # Lieferkette: Abhängigkeits-Audit, Secret-Scan, SBOM
 
+## Änderung vom 22. Oktober 2026: Prüfungen als CI-Schranke
+
+Die folgenden älteren Ergebnisse sind historische Momentaufnahmen. Aktuell gilt:
+
+- Python-Audit-Befunde und Scan-Fehler lassen die Audit-Jobs fehlschlagen; npm-Audit stoppt ab High/Critical.
+- Die direkt verwendeten GitHub Actions sind auf überprüfte Commit-SHAs festgelegt; Workflow-Token haben nur
+  `contents: read`. Neue Action-/Scanner-Stände benötigen eine bewusste Aktualisierung.
+- `deployment-ci.yml` baut Backend und Frontend ohne Produktivsecrets, erzeugt Image-SBOMs (CycloneDX) und prüft mit
+  Trivy OS- und Bibliotheksschwachstellen. High/Critical und Scan-Fehler sind Fehler; unfixed Befunde werden nicht
+  pauschal ausgeblendet. Eine nötige Ausnahme benötigt konkrete Befund-ID, Begründung, Verantwortlichen und Ablaufdatum.
+- Derselbe Workflow prüft für beide Compose-Profile die echte Startkette mit getrenntem Migrator und API-Rolle.
+- **Repository-Regeln:** Fehlgeschlagene Jobs verhindern einen Merge erst dann zuverlässig, wenn diese Checks in den
+  GitHub-Regeln als erforderlich hinterlegt sind. Dieser Code ändert keine Konto-/Repository-Einstellungen.
+- Restpunkte: Hash-Lock für transitive Python-Pakete, geregelte Digest-Updates der Basisimages und zusätzliche
+  Release-/Artefaktsignierung. Neue Scanner ersetzen weder Quellcodeprüfung noch einen vollständigen Restore.
+
+Die neue CI-Konfiguration muss beim ersten Lauf überprüft werden. Die früheren Angaben „nicht blockierend“ unten
+beschreiben ausschließlich den alten Stand.
+
 Stand: 2026-10-14, Branch `release/abhaengigkeiten`. Frühere Release-Planung, nicht mehr im Repository.
 Alle Angaben stammen aus tatsächlich ausgeführten Läufen; wo etwas nicht geprüft wurde, steht das dabei.
 Die Audit-Datenbanken ändern sich täglich. Dieses Dokument ist eine Momentaufnahme, kein Dauerzertifikat.

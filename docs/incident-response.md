@@ -62,7 +62,7 @@ Was Bilantiq tatsächlich liefert und was nicht. Das ist die ehrliche Grundlage 
 
 - Häufung von `login_fehlgeschlagen` / `mfa_code_falsch` für ein Konto oder viele Konten
   (Konto-Sperre nach 5 Fehlversuchen für 15 Minuten, `failed_login_limit` / `failed_login_lock_minutes`;
-  ein Schutz pro IP existiert im Code nicht).
+  zusaetzlich greifen prozesslokale IP-Limits fuer Anmeldung, MFA, Registrierung und Reset).
 - `mfa_deaktiviert`, `passwort_geaendert`, `passwort_zurueckgesetzt`, `email_geaendert` ohne Wissen des Nutzers; `mfa_wiederherstellungscode_verwendet` (ein Wiederherstellungscode wurde zur Anmeldung genutzt, bei unbekanntem Anlass wie ein Gerätverlust-Verdacht behandeln); gehäufte `passwort_reset_angefordert` für ein Konto (Postfach-Übernahme oder Belästigung).
 - `datenexport` oder `stammdaten_export` zu ungewöhnlicher Zeit; `mitglied_direkt_angelegt` /
   `einladung_erstellt`, die der Inhaber nicht kennt.
@@ -338,7 +338,7 @@ Restore-Test ist Release-Blocker 1 und liegt beim Betreiber.
 
 - Keine Zugriffsprotokolle (Lesezugriffe) und keine IP-Adressen im Audit-Log: Abflüsse über gültige
   Sitzungen sind schwer nachzuvollziehen.
-- Kein Rate-Limit pro IP im Code, nur Konto-Sperre nach Fehlversuchen.
+- IP-Limits existieren, aber ihre Zaehler liegen pro Prozess im Speicher. Vor mehreren Workern/Instanzen gemeinsam fuehren.
 - Kein Rotationsskript für `email_lookup_secret` und `blind_index_secret`.
 - Passwort-Reset per E-Mail und MFA-Wiederherstellungscodes sind im Code vorhanden (Migration 0038). Offen bleibt der
   Support-Prozess für Konten, die weder Passwort/Postfach noch Gerät und Wiederherstellungscodes haben (manuelle

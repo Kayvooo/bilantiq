@@ -30,6 +30,34 @@ services:
       timeout: 5s
       retries: 5
 
+  migrate:
+    build:
+      context: ./backend
+    command: ["python", "-m", "scripts.migrate_deployment"]
+    env_file: .env.home
+    depends_on:
+      postgres:
+        condition: service_healthy
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp:size=128m,noexec,nosuid,nodev
+    secrets:
+      - source: migration_database_url
+        target: database_url
+      - source: database_url
+        target: runtime_database_url
+      - jwt_secret
+      - field_encryption_key
+      - email_lookup_secret
+      - data_encryption_keys
+      - blind_index_secret
+    networks:
+      - backend_internal
+
   backend:
     build:
       context: ./backend
@@ -38,6 +66,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     read_only: true
     security_opt:
       - no-new-privileges:true
@@ -88,6 +118,8 @@ networks:
     internal: true
 
 secrets:
+  migration_database_url:
+    file: ${BILANTIQ_SECRETS_DIR:-./secrets}/migration_database_url
   postgres_password:
     file: ${BILANTIQ_SECRETS_DIR:-./secrets}/postgres_password
   database_url:

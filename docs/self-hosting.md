@@ -41,9 +41,11 @@ docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
 docker compose --env-file .env.prod -f docker-compose.prod.yml logs -f backend
 ```
 
-Beim Start des Backend-Containers passiert der Reihe nach: Speicher-Startprüfung (Abschnitt 3), Datenbankmigrationen
-(`alembic upgrade head`), Verschlüsselung eventuell vorhandener Alt-Dateien, dann der Server. Schlägt ein Schritt fehl,
-bricht der Container mit einer Meldung ab (siehe Abschnitt 13).
+Zuerst führt der einmalige Dienst `migrate` die Datenbankmigrationen aus und richtet eine eigene eingeschränkte
+API-Datenbankrolle ein. Erst danach startet das Backend: Datenbankrechte prüfen, Speicher-Startprüfung (Abschnitt 3),
+Verschlüsselung eventuell vorhandener Alt-Dateien, dann der Server. Schlägt ein Schritt fehl, startet die API nicht.
+**Bestehende Installationen:** Vor dem ersten Start dieser Version den Umstieg in
+[security-runtime.md](security-runtime.md) durchführen. Eine alte Admin-Verbindung wird nicht still überschrieben.
 
 Danach die Oberfläche unter Ihrer `APP_DOMAIN` öffnen und das **erste Konto registrieren**. Das ist der Inhaber der
 Instanz. Mit `REGISTRATION_MODE=first_account` ist die Registrierung danach geschlossen (Abschnitt 6). Richten Sie
@@ -92,7 +94,7 @@ Löschen von Importdateien (`app/altrechnungen/storage.py`) und die Schlüsselro
 ## 4. Secrets und Schlüssel
 
 `scripts/init-secrets.sh` legt unter `BILANTIQ_SECRETS_DIR` (Verzeichnis 0700, Dateien 0600) zufällige Werte an:
-`postgres_password`, `database_url`, `jwt_secret`, `field_encryption_key`, `email_lookup_secret`, `blind_index_secret`,
+`postgres_password`, `migration_database_url`, `database_url`, `jwt_secret`, `field_encryption_key`, `email_lookup_secret`, `blind_index_secret`,
 `data_encryption_keys`. Bestehende Dateien werden nie überschrieben. Die Secrets gelangen als Docker-Secrets
 read-only nach `/run/secrets` in den Container, nicht in `.env.prod` und nicht in Umgebungsvariablen.
 
@@ -216,7 +218,9 @@ docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --build
 docker compose --env-file .env.prod -f docker-compose.prod.yml logs --tail 100 backend
 ```
 
-Das Backend führt beim Start `alembic upgrade head` aus. Schemaänderungen kommen ausschließlich über neue Migrationen;
+Der separate Dienst `migrate` führt `alembic upgrade head` aus; die API selbst hat keine Schema-Verwaltungsrechte.
+Bei Updates nach Stoppen der alten API auch `migrate` erneut ausführen/recreaten (siehe `docs/security-runtime.md`).
+Schemaänderungen kommen ausschließlich über neue Migrationen;
 manche sind nicht umkehrbar (z. B. `0036`). Ein „Zurück“ gibt es deshalb nur über das Zurückspielen des Backups von vor
 dem Update (`docs/rollback.md` beschreibt den Ablauf). Prüfen Sie nach jedem
 Update: Anmeldung, Rechnungsliste, ein PDF, ein Beleg, `GET /health`. Halten Sie außerdem das Betriebssystem, Docker und

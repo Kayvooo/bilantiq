@@ -1,0 +1,112 @@
+name: deployment-ci
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "backend/**"
+      - "scripts/init-secrets.sh"
+      - "docker-compose.*.yml"
+      - ".env.*.example"
+      - ".github/workflows/deployment-ci.yml"
+  push:
+    paths:
+      - "backend/**"
+      - "scripts/init-secrets.sh"
+      - "docker-compose.*.yml"
+      - ".env.*.example"
+      - ".github/workflows/deployment-ci.yml"
+
+jobs:
+  image-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: backend
+            context: backend
+            dockerfile: backend/Dockerfile
+          - image: frontend
+            context: .
+            dockerfile: frontend/Dockerfile
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Image ohne Produktionssecrets bauen
+        env:
+          IMAGE: ${{ matrix.image }}
+          CONTEXT: ${{ matrix.context }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: docker build --file "$DOCKERFILE" --tag "bilantiq-security:$IMAGE" "$CONTEXT"
+      - name: SBOM des tatsaechlichen Images
+        uses: aquasecurity/trivy-action@8f28faec26515256b6d22074d1d2a8986f4cbd87
+        with:
+          version: v0.76.1
+          image-ref: bilantiq-security:${{ matrix.image }}
+          format: cyclonedx
+          output: sbom-${{ matrix.image }}.json
+      - name: OS- und Bibliotheksschwachstellen pruefen
+        uses: aquasecurity/trivy-action@8f28faec26515256b6d22074d1d2a8986f4cbd87
+        with:
+          version: v0.76.1
+          image-ref: bilantiq-security:${{ matrix.image }}
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+      - name: Image-SBOM aufbewahren
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sbom-${{ matrix.image }}
+          path: sbom-${{ matrix.image }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  runtime-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [prod, home]
+    env:
+      PROFILE: ${{ matrix.profile }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Wegwerfkonfiguration und Secrets
+        shell: bash
+        run: |
+          echo "BILANTIQ_SECRETS_DIR=$RUNNER_TEMP/bilantiq-secrets" >> "$GITHUB_ENV"
+          cp ".env.$PROFILE.example" ".env.$PROFILE"
+          sed -i 's/^TRUSTED_HOSTS_RAW=.*/TRUSTED_HOSTS_RAW=api.example.invalid/' ".env.$PROFILE"
+          sudo env BILANTIQ_SECRETS_DIR="$RUNNER_TEMP/bilantiq-secrets" ./scripts/init-secrets.sh
+      - name: Compose validieren und echte Startkette ausfuehren
+        shell: bash
+        run: |
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" config > /dev/null
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" up -d --build backend
+      - name: API-Bereitschaft, UID und Secret-Grenze
+        shell: bash
+        run: |
+          compose() { sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" "$@"; }
+          for attempt in $(seq 1 30); do
+            if compose exec -T backend python -c "import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready', headers={'Host':'api.example.invalid'}); assert urllib.request.urlopen(r, timeout=2).status == 200"; then break; fi
+            sleep 1
+          done
+          compose exec -T backend python -c "import os; from pathlib import Path; assert os.getuid()==1000; assert not Path('/run/secrets/migration_database_url').exists(); assert not Path('/run/secrets/runtime_database_url').exists()"
+          compose exec -T backend python -m app.core.runtime_security
+          compose exec -T backend python -c "import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready', headers={'Host':'api.example.invalid'}); assert urllib.request.urlopen(r, timeout=2).status == 200"
+      - name: Erneutes Migrieren bleibt sicher
+        run: |
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" run --rm --no-deps migrate
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" exec -T backend python -m app.core.runtime_security
+      - name: Diagnose
+        if: failure()
+        run: sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" logs --no-color --tail 100 migrate backend postgres
+      - name: Wegwerfvolumes entfernen
+        if: always()
+        run: sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" down -v

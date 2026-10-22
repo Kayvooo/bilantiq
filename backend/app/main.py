@@ -14,6 +14,7 @@ from app.buchhaltungseinstellungen.routes import router as buchhaltungseinstellu
 from app.config import settings
 from app.core.audit_log import AuditLogAppendOnlyError
 from app.core.storage_check import SpeicherFehler, pruefe_speicher
+from app.core.runtime_security import pruefe_datenbankrolle
 from app.core.zugriffslog import installiere_zugriffslog_maskierung
 from app.db import Base, IS_POSTGRES, engine
 from app.einnahmen.routes import router as einnahmen_router
@@ -54,6 +55,7 @@ installiere_zugriffslog_maskierung()
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    pruefe_datenbankrolle(engine, settings.app_env)
     installiere_zugriffslog_maskierung()  # idempotent; falls ein Logging-Reset dazwischenkam
     # Dateispeicher (STORAGE_DIR) pruefen, bevor Anfragen angenommen werden: lieber jetzt mit klarer Meldung stoppen
     # als beim ersten Beleg-Upload mit einem 500er. Im Docker-Image laeuft dieselbe Pruefung zusaetzlich vorab als

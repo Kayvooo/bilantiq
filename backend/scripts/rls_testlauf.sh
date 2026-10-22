@@ -27,7 +27,7 @@ export SMTP_HOST=smtp.test.invalid SMTP_USER=tests@example.invalid SMTP_PASSWORD
 
 ADMIN="postgresql+psycopg://postgres@127.0.0.1:$PORT/bq_test"
 DATABASE_URL="$ADMIN" "$PYTHON" -m alembic upgrade head >/dev/null
-psql -q -h 127.0.0.1 -p "$PORT" -U postgres -d bq_test -v rolle=bilantiq_runtime -v passwort="'rt-test'" -f scripts/runtime_rolle.sql >/dev/null
+psql -q -h 127.0.0.1 -p "$PORT" -U postgres -d bq_test -v rolle=bilantiq_runtime -v passwort=rt-test -f scripts/runtime_rolle.sql >/dev/null
 
 export TEST_DATABASE_ADMIN_URL="$ADMIN"
 export DATABASE_URL="postgresql+psycopg://bilantiq_runtime:rt-test@127.0.0.1:$PORT/bq_test"
