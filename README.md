@@ -89,6 +89,16 @@ npm run dev          # öffnet http://localhost:5173; die API-Adresse steht in f
 
 Beim ersten Aufruf legen Sie das erste Konto an (Registrierung ist im Standard nur für das erste Konto offen).
 
+Ist Port 8000 schon belegt (dann zeigt das Frontend zum Beispiel „Not Found", weil dort ein anderes Programm antwortet), starten
+Sie das Backend auf einem anderen Port und sagen dem Frontend, wo es ist:
+
+```bash
+uvicorn app.main:app --reload --port 8010                  # im Ordner backend
+VITE_API_BASE_URL=http://localhost:8010 npm run dev        # im Ordner frontend (PowerShell: $env:VITE_API_BASE_URL="http://localhost:8010"; npm run dev)
+```
+
+Prüfen, ob wirklich Bilantiq antwortet: `curl -s localhost:8010/openapi.json | head -c 80` muss `"title":"Bilantiq` zeigen.
+
 Vor einem Pull Request: `npx tsc -b --noEmit`, `npm run lint`, `npm run build` und `pytest -q`. Die lokale Dev-Datenbank wird
 per `create_all()` erzeugt und ändert bestehende Spalten nicht: bei Schemaänderungen die Datei löschen. Produktion nutzt
 ausschließlich Alembic-Migrationen (`backend/migrations/`).
