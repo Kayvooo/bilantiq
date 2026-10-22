@@ -2,7 +2,7 @@
 # Build-Kontext ist das Repo-Wurzelverzeichnis (siehe docker-compose.prod.yml), damit
 # neben frontend/ auch die Caddyfile erreichbar ist.
 
-FROM node:22-alpine AS build
+FROM node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS build
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
@@ -15,7 +15,7 @@ RUN npm run build
 
 # Upstream-Caddy 2.11.7 mit den reparierten Go-/x/net-Versionen bauen.
 # Der Einstiegspunkt entspricht dem von Caddy dokumentierten Standard-Build ohne Zusatzplugins.
-FROM golang:1.27.3-alpine3.23 AS caddy-build
+FROM golang:1.27.3-alpine3.23@sha256:754d5200fc3edae76d3b6598a9a3fac7e74981ee6a5413ab955025f185753ef2 AS caddy-build
 ENV CGO_ENABLED=0 GOTOOLCHAIN=local
 WORKDIR /src
 COPY frontend/caddy/main.go ./
@@ -26,7 +26,7 @@ RUN go mod init bilantiq.local/caddy \
 
 # Laufzeit-Stufe: Caddy dient das SPA statisch aus, terminiert TLS (automatisches
 # Let's Encrypt) und proxyt die API auf den backend-Container.
-FROM caddy:2.11.7-alpine
+FROM caddy:2.11.7-alpine@sha256:24ec7b05bc532c7bb57f727030c5056e257ff7138b4b50460306819ff79362bd
 COPY --from=caddy-build /out/caddy /usr/bin/caddy
 RUN setcap cap_net_bind_service=+ep /usr/bin/caddy
 COPY --from=build /app/dist /srv

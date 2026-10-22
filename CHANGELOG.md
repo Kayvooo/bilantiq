@@ -7,6 +7,10 @@ und Datum legt der Owner beim Release fest (Release-Plan 1.9).
 
 ## [Unveröffentlicht] - Datenbankrechte und Sicherheitsabnahme
 
+- Laufzeit-/Dev-Abhängigkeiten einschließlich Audit-Werkzeug besitzen transitive Versions- und SHA-256-Locks.
+  Docker und CI installieren ausschließlich hashgeprüfte Wheels; Versionsdrift wird abgewiesen. Basisimages und
+  PostgreSQL sind auf überprüfte Multiarch-Digests festgelegt. Audit-Pipelines verwenden explizites Bash/pipefail,
+  damit ein Fehler vor `tee` den Job ebenfalls fehlschlagen lässt.
 - Eigener einmaliger Migrationsdienst für beide Compose-Profile. Die API verwendet eine eingeschränkte Laufzeitrolle
   und verweigert in staging/production den Start mit privilegierten DB-Rechten. Umstieg bestehender Installationen:
   `docs/security-runtime.md`; Daten und Kryptoschlüssel bleiben erhalten.

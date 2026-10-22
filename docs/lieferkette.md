@@ -5,6 +5,11 @@
 Die folgenden älteren Ergebnisse sind historische Momentaufnahmen. Aktuell gilt:
 
 - Python-Audit-Befunde und Scan-Fehler lassen die Audit-Jobs fehlschlagen; npm-Audit stoppt ab High/Critical.
+  Für Pipelines mit `tee` ist `shell: bash` ausdrücklich gesetzt, damit `pipefail` auch den Scanner-Exitcode durchreicht.
+- Backend-Anwendungen und Dev-/Audit-Werkzeuge werden mit `--require-hashes --only-binary=:all:` aus
+  `requirements.lock` bzw. `requirements-dev.lock` installiert. Die CI erkennt veraltete direkte Vorgaben und
+  abweichende Laufzeit-/Dev-Versionen; zusätzliche Pip-Auflösungsprüfungen prüfen die Wheels für Python 3.13/3.14
+  unter Linux amd64/arm64. Diese Auflösung ist kein nativer arm64-Laufzeittest.
 - Die direkt verwendeten GitHub Actions sind auf überprüfte Commit-SHAs festgelegt; Workflow-Token haben nur
   `contents: read`. Neue Action-/Scanner-Stände benötigen eine bewusste Aktualisierung.
 - `deployment-ci.yml` baut Backend und Frontend ohne Produktivsecrets, erzeugt Image-SBOMs (CycloneDX) und prüft mit
@@ -13,8 +18,10 @@ Die folgenden älteren Ergebnisse sind historische Momentaufnahmen. Aktuell gilt
 - Derselbe Workflow prüft für beide Compose-Profile die echte Startkette mit getrenntem Migrator und API-Rolle.
 - **Repository-Regeln:** Fehlgeschlagene Jobs verhindern einen Merge erst dann zuverlässig, wenn diese Checks in den
   GitHub-Regeln als erforderlich hinterlegt sind. Dieser Code ändert keine Konto-/Repository-Einstellungen.
-- Restpunkte: Hash-Lock für transitive Python-Pakete, geregelte Digest-Updates der Basisimages und zusätzliche
-  Release-/Artefaktsignierung. Neue Scanner ersetzen weder Quellcodeprüfung noch einen vollständigen Restore.
+- Basisimages und PostgreSQL sind auf geprüfte Multiarch-Digests festgelegt. Die Build-Prüfung verlangt für die
+  Dockerfile-Basisimages Linux amd64/arm64. Änderungen benötigen einen neuen Scan und eine echte Laufzeitprüfung.
+- Restpunkte: offene Debian-CVEs, zusätzliche Release-/Artefaktsignierung und vollständiger Restore. apt-Pakete
+  stammen weiter aus aktuellen signierten Repositories; die Builds sind dadurch nicht vollständig bitidentisch.
 
 Der erste Lauf für `8fb9c4b` bestand bei Python-/npm-Audit, Backend-Suiten und beiden Compose-Profilen. Die neuen
 Image-Schranken stoppten korrekt bei High-/Critical-Befunden. Nach den gezielten Updates in `d2608032` bestehen die
@@ -22,6 +29,30 @@ Regressionstests, beide Compose-Profile, native Bild-/PDF-/OCR-Verarbeitung und 
 bleiben 80 Debian-Paketmeldungen zu 29 CVEs offen; der Job bleibt rot. Architektur und Abnahme stehen in
 `specs/security-images.md`, sämtliche CVE-IDs und Maßnahmen in `security-image-befunde.md`. Es gibt keine pauschalen Ausnahmen.
 Die früheren Angaben „nicht blockierend“ unten beschreiben ausschließlich den alten Stand.
+
+## Pflege der Python-Locks und Image-Digests
+
+Direkte Python-Versionen in `backend/requirements.txt` bzw. `requirements-dev.txt` ändern. Mit uv 0.12.23 wurden
+die Locks erzeugt; Hashes nicht von Hand ergänzen. Laufzeit zuerst, anschließend Dev mit dem Laufzeit-Lock als Constraint:
+
+```bash
+cd backend
+uv pip compile --universal --python-version 3.13 --no-strip-extras --generate-hashes --output-file requirements.lock requirements.txt
+uv pip compile --universal --python-version 3.13 --no-strip-extras --generate-hashes --constraint requirements.lock --output-file requirements-dev.lock requirements-dev.txt
+pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
+python -m scripts.check_dependency_locks
+pip check
+pip-audit --require-hashes -r requirements-dev.lock
+```
+
+uv behält kompatible bestehende Pins bei. Für ein bewusstes transitives Update gezielt `--upgrade-package NAME`
+angeben und beide Locks erneuern. Danach Versions-/Hash-Diffs, Audit und vollständige Tests prüfen. Auch gültige
+Hashes können zu verwundbaren oder beim ersten Bezug bereits manipulierten Paketen gehören; Paketprüfung bleibt nötig.
+
+Die Image-Digests stammen aus der Build-Auflösung der Deployment-CI sowie der öffentlichen Docker-Registry;
+Multiarch-Indizes für amd64/arm64 wurden geprüft. Für Updates Tag **und** Digest bewusst vergleichen, Hersteller-/
+Schwachstellenhinweise prüfen, neue SBOM/Scans erzeugen und beide Compose-Profile abnehmen. Ein gepinntes Image
+aktualisiert sich nicht allein durch `docker compose pull`; der Digest muss im Repository erneuert werden.
 
 Stand: 2026-10-14, Branch `release/abhaengigkeiten`. Frühere Release-Planung, nicht mehr im Repository.
 Alle Angaben stammen aus tatsächlich ausgeführten Läufen; wo etwas nicht geprüft wurde, steht das dabei.

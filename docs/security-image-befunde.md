@@ -34,6 +34,10 @@ und deren Bibliotheken getrennt von tatsächlich benötigten OCR-/PDF-Abhängigk
 von Paketmetadaten, kein Wechsel auf ungeprüfte Distributionspakete und keine selbst gepflegte Bibliothekskopie ohne
 klaren Update-Verantwortlichen. Nach jeder Änderung native Verarbeitung und beide Compose-Profile wieder prüfen.
 
+Die SBOM-Abhängigkeiten wurden dazu nachvollzogen: `poppler-utils -> libpoppler147 -> libgpgmepp6t64 -> libgpgme11t64
+-> gnupg` sowie `tesseract-ocr/libtesseract5 -> libarchive13t64 -> libxml2`. Ein einfaches Entfernen dieser Pakete ist
+keine funktionsneutrale Bereinigung. Ein schlankerer Parser-Build braucht eine eigene Pflege-/Abnahmeentscheidung.
+
 **Priorität 3:** Jede CVE einzeln auf Paketstatus, geladenen Code und erforderliche Rechte bewerten. Bestehende Kontrollen
 sind UID 1000, schreibgeschütztes Root-Dateisystem, `cap_drop: ALL`, `no-new-privileges` und kein Docker-Socket.
 Sie begrenzen bestimmte Systemrechte; sie schützen die API-Schlüssel nicht zuverlässig vor kompromittierten Parsern.

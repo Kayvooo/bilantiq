@@ -1,5 +1,5 @@
 # Produktions-Image fuer das Bilantiq-Backend (FastAPI/uvicorn).
-FROM python:3.14.9-slim-trixie
+FROM python:3.14.9-slim-trixie@sha256:b347e2dcbc7f0b6f9fb7182e9da6a187fb10ae715e0692518c1aed0eec94a700
 
 # System-Abhaengigkeiten fuer die lokale Belegerfassung (OCR), siehe README:
 # Tesseract inkl. deutschem Sprachpaket und Poppler fuers PDF-Rendering.
@@ -9,9 +9,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY requirements.lock .
 # Installer und deren vendorte Bibliotheken werden fuer die unveraenderliche Laufzeit nicht benoetigt.
-RUN pip install --no-cache-dir -r requirements.txt \
+RUN pip install --no-cache-dir --require-hashes --only-binary=:all: -r requirements.lock \
     && python -m pip uninstall --yes pip setuptools \
     && rm -rf /usr/local/lib/python3.14/ensurepip /root/.cache/pip
 

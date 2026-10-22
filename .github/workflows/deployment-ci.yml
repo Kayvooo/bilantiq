@@ -11,6 +11,7 @@ on:
       - "frontend/Dockerfile"
       - "frontend/caddy/**"
       - "Caddyfile*"
+      - ".dockerignore"
       - "scripts/init-secrets.sh"
       - "docker-compose.*.yml"
       - ".env.*.example"
@@ -21,6 +22,7 @@ on:
       - "frontend/Dockerfile"
       - "frontend/caddy/**"
       - "Caddyfile*"
+      - ".dockerignore"
       - "scripts/init-secrets.sh"
       - "docker-compose.*.yml"
       - ".env.*.example"
@@ -42,6 +44,21 @@ jobs:
             dockerfile: frontend/Dockerfile
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Gepinnte Basisimages unterstuetzen amd64 und arm64
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          images = re.findall(r"^FROM\s+(\S+)", Path(os.environ["DOCKERFILE"]).read_text(), re.MULTILINE)
+          for image in images:
+              assert re.search(r"@sha256:[0-9a-f]{64}$", image), f"Image-Digest fehlt: {image}"
+              manifest = json.loads(subprocess.check_output(["docker", "buildx", "imagetools", "inspect", image, "--raw"], text=True))
+              platforms = {(m.get("platform", {}).get("os"), m.get("platform", {}).get("architecture")) for m in manifest.get("manifests", [])}
+              assert {("linux", "amd64"), ("linux", "arm64")} <= platforms, f"Zielplattform fehlt: {image}"
+              print(image, "unterstuetzt linux/amd64 und linux/arm64")
+          PY
       - name: Image ohne Produktionssecrets bauen
         env:
           IMAGE: ${{ matrix.image }}

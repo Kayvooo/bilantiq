@@ -15,6 +15,9 @@ Review-Basis: `c63413a74bea1af2570dd0121b144202d2f9c7db`, 22. Oktober 2026.
 
 ## Durchgeführt
 
+- Weiterführung F8: hashgeprüfte Laufzeit-/Dev-Locks, Versionsdrift-Prüfung, Multiarch-Image-Digests einschließlich
+  PostgreSQL und explizites Bash/pipefail ergänzt. Acht lokale Negativ-/Positivtests der Lock-Prüfung bestanden;
+  manipulierte Hashes und fehlgeschlagene Pipelines werden abgewiesen. Vollständige CI-Abnahme dieses Nachtrags offen.
 - Gezielte Tests für Laufzeitrechte, Security-Header und Alembic-Head unter Python 3.14.8: **17 bestanden, 7 PostgreSQL-Tests übersprungen** (kein Server).
 - GitHub Actions für Commit `8fb9c4b`: SQLite **813 bestanden, 63 übersprungen**; PostgreSQL/RLS **830 bestanden, 46 übersprungen**.
   Beide echten Compose-Startketten (`prod`, `home`) einschließlich Wiederholungsmigration bestanden.

@@ -22,8 +22,9 @@
 ## Grenzen
 
 Ein höherer Versionsstand allein beweist keine vollständige Sicherheit. Aktueller Image-Scan, Regressionstests und
-Betriebsabnahme bleiben erforderlich. Basisimages sind auf Versionen festgelegt, aber noch nicht vollständig auf
-Registry-Digests. Neue Scannerbefunde müssen einzeln bewertet werden. Claude-Pakete F2 bis F7 bleiben separat.
+Betriebsabnahme bleiben erforderlich. Basisimages sind auf Versionen und Registry-Digests festgelegt
+(`security-dependency-pins.md`); apt-Pakete werden weiterhin aus aktuellen signierten Repositories installiert.
+Neue Scannerbefunde müssen einzeln bewertet werden. Claude-Pakete F2 bis F7 bleiben separat.
 
 Die Abnahme für `d2608032` ist in `../security-image-befunde.md` dokumentiert: Laufzeit-/Regressionstests und
 Frontend-Image bestehen, der Backend-Image-Job bleibt wegen offener Debian-Befunde gesperrt.

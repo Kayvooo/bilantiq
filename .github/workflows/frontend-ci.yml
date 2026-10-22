@@ -44,4 +44,5 @@ jobs:
         with:
           node-version: "22"
       - name: npm audit (blockierend)
+        shell: bash
         run: npm audit --audit-level=high | tee -a "$GITHUB_STEP_SUMMARY"
