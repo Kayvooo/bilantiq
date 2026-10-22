@@ -1,0 +1,165 @@
+name: deployment-ci
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "backend/**"
+      - "frontend/Dockerfile"
+      - "frontend/caddy/**"
+      - "Caddyfile*"
+      - ".dockerignore"
+      - "scripts/init-secrets.sh"
+      - "docker-compose.*.yml"
+      - ".env.*.example"
+      - ".github/workflows/deployment-ci.yml"
+  push:
+    paths:
+      - "backend/**"
+      - "frontend/Dockerfile"
+      - "frontend/caddy/**"
+      - "Caddyfile*"
+      - ".dockerignore"
+      - "scripts/init-secrets.sh"
+      - "docker-compose.*.yml"
+      - ".env.*.example"
+      - ".github/workflows/deployment-ci.yml"
+
+jobs:
+  image-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: backend
+            context: backend
+            dockerfile: backend/Dockerfile
+          - image: frontend
+            context: .
+            dockerfile: frontend/Dockerfile
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Gepinnte Basisimages unterstuetzen amd64 und arm64
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          images = re.findall(r"^FROM\s+(\S+)", Path(os.environ["DOCKERFILE"]).read_text(), re.MULTILINE)
+          for image in images:
+              assert re.search(r"@sha256:[0-9a-f]{64}$", image), f"Image-Digest fehlt: {image}"
+              manifest = json.loads(subprocess.check_output(["docker", "buildx", "imagetools", "inspect", image, "--raw"], text=True))
+              platforms = {(m.get("platform", {}).get("os"), m.get("platform", {}).get("architecture")) for m in manifest.get("manifests", [])}
+              assert {("linux", "amd64"), ("linux", "arm64")} <= platforms, f"Zielplattform fehlt: {image}"
+              print(image, "unterstuetzt linux/amd64 und linux/arm64")
+          PY
+      - name: Image ohne Produktionssecrets bauen
+        env:
+          IMAGE: ${{ matrix.image }}
+          CONTEXT: ${{ matrix.context }}
+          DOCKERFILE: ${{ matrix.dockerfile }}
+        run: docker build --file "$DOCKERFILE" --tag "bilantiq-security:$IMAGE" "$CONTEXT"
+      - name: SBOM des tatsaechlichen Images
+        uses: aquasecurity/trivy-action@8f28faec26515256b6d22074d1d2a8986f4cbd87
+        with:
+          version: v0.76.1
+          image-ref: bilantiq-security:${{ matrix.image }}
+          format: cyclonedx
+          output: sbom-${{ matrix.image }}.json
+      - name: Native Backend-Laufzeit pruefen
+        if: matrix.image == 'backend'
+        run: docker run --rm bilantiq-security:backend python -m scripts.image_smoke
+      - name: Beide Caddy-Konfigurationen pruefen
+        if: matrix.image == 'frontend'
+        run: |
+          docker run --rm -e APP_DOMAIN=app.example.invalid -e API_DOMAIN=api.example.invalid bilantiq-security:frontend caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+          docker run --rm -v "$PWD/Caddyfile.home:/etc/caddy/Caddyfile:ro" bilantiq-security:frontend caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+      - name: OS- und Bibliotheksschwachstellen pruefen
+        uses: aquasecurity/trivy-action@8f28faec26515256b6d22074d1d2a8986f4cbd87
+        with:
+          version: v0.76.1
+          image-ref: bilantiq-security:${{ matrix.image }}
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          format: json
+          output: vulnerabilities-${{ matrix.image }}.json
+          exit-code: "1"
+      - name: Befunde im Jobprotokoll zusammenfassen
+        if: always()
+        env:
+          REPORT: vulnerabilities-${{ matrix.image }}.json
+        run: |
+          python - <<'PY'
+          import json, os
+          from collections import Counter
+          from pathlib import Path
+          report = Path(os.environ["REPORT"])
+          if not report.exists():
+              print("Kein Schwachstellenbericht erzeugt; vorherige Schritte pruefen.")
+          else:
+              findings = [v for r in json.loads(report.read_text()).get("Results", []) for v in r.get("Vulnerabilities", [])]
+              print("Schweregrade:", dict(Counter(v["Severity"] for v in findings)))
+              for v in findings:
+                  print(v["VulnerabilityID"], v["PkgName"], v["InstalledVersion"], "->", v.get("FixedVersion") or "kein Fix veroeffentlicht")
+          PY
+      - name: Image-SBOM aufbewahren
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sbom-${{ matrix.image }}
+          path: |
+            sbom-${{ matrix.image }}.json
+            vulnerabilities-${{ matrix.image }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  runtime-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [prod, home]
+    env:
+      PROFILE: ${{ matrix.profile }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Wegwerfkonfiguration und Secrets
+        shell: bash
+        run: |
+          echo "BILANTIQ_SECRETS_DIR=$RUNNER_TEMP/bilantiq-secrets" >> "$GITHUB_ENV"
+          cp ".env.$PROFILE.example" ".env.$PROFILE"
+          sed -i 's/^TRUSTED_HOSTS_RAW=.*/TRUSTED_HOSTS_RAW=api.example.invalid/' ".env.$PROFILE"
+          sudo env BILANTIQ_SECRETS_DIR="$RUNNER_TEMP/bilantiq-secrets" ./scripts/init-secrets.sh
+      - name: Compose validieren und echte Startkette ausfuehren
+        shell: bash
+        run: |
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" config > /dev/null
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" up -d --build backend
+      - name: API-Bereitschaft, UID und Secret-Grenze
+        shell: bash
+        run: |
+          compose() { sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" "$@"; }
+          for attempt in $(seq 1 30); do
+            if compose exec -T backend python -c "import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready', headers={'Host':'api.example.invalid'}); assert urllib.request.urlopen(r, timeout=2).status == 200"; then break; fi
+            sleep 1
+          done
+          compose exec -T backend python -c "import os; from pathlib import Path; assert os.getuid()==1000; assert not Path('/run/secrets/migration_database_url').exists(); assert not Path('/run/secrets/runtime_database_url').exists()"
+          compose exec -T backend python -m app.core.runtime_security
+          compose exec -T backend python -c "import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready', headers={'Host':'api.example.invalid'}); assert urllib.request.urlopen(r, timeout=2).status == 200"
+      - name: Erneutes Migrieren bleibt sicher
+        run: |
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" run --rm --no-deps migrate
+          sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" exec -T backend python -m app.core.runtime_security
+      - name: Diagnose
+        if: failure()
+        run: sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" logs --no-color --tail 100 migrate backend postgres
+      - name: Wegwerfvolumes entfernen
+        if: always()
+        run: sudo -E docker compose --env-file ".env.$PROFILE" -f "docker-compose.$PROFILE.yml" down -v

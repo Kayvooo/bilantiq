@@ -31,9 +31,11 @@ Initialisierung:
     sudo BILANTIQ_SECRETS_DIR=/opt/bilantiq/secrets ./scripts/init-secrets.sh
 
 Danach:
-- Verzeichnis 0700, Dateien 0600, Besitzer root.
+- Verzeichnis 0700, Dateien 0600. Dateien für API/Migrator gehören für lokale Compose-Bind-Mounts UID 1000; die Admin-URL
+  wird nur in den Migrator gemountet. `init-secrets.sh` richtet dies als root ein; siehe `security-runtime.md`.
 - smtp_password nur ersetzen, wenn E-Mail genutzt werden soll (SMTP ist optional; der Platzhalter SET_ME bedeutet "aus").
-- database_url und postgres_password gemeinsam rotieren.
+- `database_url` bezeichnet die eigene API-Rolle. `migration_database_url`/`postgres_password` betreffen den separaten
+  Administrator. Rotationen der jeweiligen PostgreSQL-Passwörter müssen zur passenden URL synchron erfolgen.
 - Backup der Key-Dateien getrennt vom Datenbackup und offline/zugriffsbeschraenkt halten.
 - Verlust aller aktiven DATA_ENCRYPTION_KEYS bedeutet Datenverlust; ein alter Key darf
   erst entfernt werden, wenn DB- und Dateirotation erfolgreich verifiziert wurden.
@@ -85,7 +87,8 @@ Das Skript ist idempotent.
   erzeugt (nur ein Log-Eintrag). Die Mails laufen über denselben SMTP-Zugang wie die E-Mail-Bestätigung; der Versand ist
   bisher nur gegen Attrappen getestet, ein Echttest mit dem Produktions-SMTP steht aus.
 - Schutz vor Raten: Konto-Sperre nach 5 Fehlversuchen für 15 Minuten (`failed_login_limit`,
-  `failed_login_lock_minutes`). Ein Limit pro IP-Adresse gibt es im Code nicht.
+  `failed_login_lock_minutes`) plus IP-Limits für Login, Registrierung, MFA und Reset. IP-Zähler liegen pro Prozess
+  im Speicher und müssen vor mehreren Workern/Instanzen gemeinsam geführt werden.
 - Full-Access-JWTs sind an eine serverseitige Session und security_version gebunden.
 - Passwort-, E-Mail- oder MFA-Aenderung widerruft bestehende Sessions.
 - Benutzerentfernung wird bei jedem Request gegen die aktuelle Membership geprueft.
@@ -98,6 +101,7 @@ docker-compose.prod.yml:
 - Backend-Dateisystem read-only, nur /app/data und /tmp schreibbar.
 - Backend no-new-privileges, Linux-Capabilities entfernt.
 - Secrets nur read-only unter /run/secrets.
+- Eigener einmaliger Migrationsdienst; API-Startprüfung erzwingt eingeschränkte Laufzeitrechte.
 
 Vor Deployment pruefen:
 

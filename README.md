@@ -58,7 +58,7 @@ Backend (Python 3.13 oder 3.14), Linux/macOS:
 ```bash
 cd backend
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
 python scripts/dev_env_erzeugen.py   # legt .env mit frischen Schlüsseln an (nur für lokal)
 uvicorn app.main:app --reload
 pytest -q                            # SQLite, kein Postgres nötig; die Postgres-RLS-Tests brauchen TEST_DATABASE_ADMIN_URL
@@ -70,7 +70,7 @@ Windows (PowerShell):
 cd backend
 py -m venv .venv
 .venv\Scripts\Activate.ps1          # bei einer Fehlermeldung zuerst: Set-ExecutionPolicy -Scope Process Bypass
-pip install -r requirements-dev.txt
+pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
 python scripts/dev_env_erzeugen.py
 uvicorn app.main:app --reload
 ```

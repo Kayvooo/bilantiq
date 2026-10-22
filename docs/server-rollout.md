@@ -1,5 +1,11 @@
 # Server-Rollout: Mandantentrennung (RLS) und verschlüsselte Spalten
 
+## Aktueller Hinweis zur Privilegientrennung
+
+Für neue und bestehende Compose-Installationen gilt jetzt [security-runtime.md](security-runtime.md): eigener Migrator,
+getrennte Verbindungen und API-Startprüfung. Die folgende frühere manuelle Rollout-Anleitung ist historischer Kontext;
+insbesondere führt die laufende API selbst keine Migrationen mehr aus.
+
 Stand: 2026-10-11. Gilt für den Wechsel von der älteren Version auf `main` ab PR #9
 (Migrationen 0035 und 0036). Geprüft ist alles nur gegen eine temporäre lokale Postgres-Instanz.
 Der echte Server wurde nicht angefasst. Die Compose-Dienstnamen unten (`backend`, `postgres`) sind

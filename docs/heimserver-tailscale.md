@@ -36,15 +36,15 @@ Handy/Laptop ──(Tailscale, verschlüsselt)──> tailscale serve (HTTPS, Ze
 Die Schlüssel liegen in einem Ordner in Ihrem Benutzerverzeichnis, nicht im Repository:
 
 ```bash
-BILANTIQ_SECRETS_DIR=$HOME/.config/bilantiq/secrets ./scripts/init-secrets.sh
+sudo BILANTIQ_SECRETS_DIR=$HOME/.config/bilantiq/secrets ./scripts/init-secrets.sh
 ```
 
 **Sichern Sie sofort `data_encryption_keys` aus diesem Ordner** (Passwortmanager, ausgedruckt). Ohne diesen Schlüssel sind alle
 verschlüsselten Daten unwiederbringlich verloren, auch mit intaktem Backup.
 
-Hinweis zu den Rechten: Das Backend läuft im Container als Benutzer mit der Nummer 1000. Die Secret-Dateien müssen für ihn lesbar
-sein. Gehören sie Ihnen und Sie sind Benutzer 1000 (`id -u` zeigt 1000), passt das. Haben Sie eine andere Nummer, ändern Sie
-die Dateirechte auf 644 (`chmod 644 ~/.config/bilantiq/secrets/*`) und lassen den Ordner selbst auf 700.
+Hinweis zu den Rechten: API und Migrator laufen als UID 1000. Bei Einrichtung als root weist das Skript die benötigten
+Dateien dieser UID zu; die Dateien bleiben 0600 und das Verzeichnis 0700. Die Admin-Verbindung erhält nur der separate
+Migrationsdienst. Bestehende Installationen vor dem Start nach [security-runtime.md](security-runtime.md) umstellen.
 
 ## 2. Einstellungen
 

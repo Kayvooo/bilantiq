@@ -1,9 +1,15 @@
 .venv/
+.venv*/
 __pycache__/
 **/__pycache__/
 *.db
 data/
 .env
+.env.*
+!.env.example
+pip-unpack-*/
+pip-metadata-*/
+tmp*
 .pytest_cache/
 .ruff_cache/
 .kosit-regeln

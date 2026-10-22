@@ -5,6 +5,26 @@ Alle nennenswerten Änderungen an Bilantiq. Das Format orientiert sich an
 der Git-Historie (Commits vom 5. September bis 14. Oktober 2026). Es wurde **kein Tag gesetzt**; Versionsnummer
 und Datum legt der Owner beim Release fest (Release-Plan 1.9).
 
+## [Unveröffentlicht] - Datenbankrechte und Sicherheitsabnahme
+
+- Laufzeit-/Dev-Abhängigkeiten einschließlich Audit-Werkzeug besitzen transitive Versions- und SHA-256-Locks.
+  Docker und CI installieren ausschließlich hashgeprüfte Wheels; Versionsdrift wird abgewiesen. Basisimages und
+  PostgreSQL sind auf überprüfte Multiarch-Digests festgelegt. Audit-Pipelines verwenden explizites Bash/pipefail,
+  damit ein Fehler vor `tee` den Job ebenfalls fehlschlagen lässt.
+- Eigener einmaliger Migrationsdienst für beide Compose-Profile. Die API verwendet eine eingeschränkte Laufzeitrolle
+  und verweigert in staging/production den Start mit privilegierten DB-Rechten. Umstieg bestehender Installationen:
+  `docs/security-runtime.md`; Daten und Kryptoschlüssel bleiben erhalten.
+- Secret-Dateien bleiben 0600 und sind für die jeweils berechtigten Container lesbar; die Admin-URL wird nicht in die
+  API gemountet. SQL-Parameter werden in Fehlermeldungen der Anwendungs-Engine ausgeblendet.
+- CI-Audits schlagen bei Befunden/Scan-Fehlern fehl, Actions sind auf Commit-SHAs festgelegt. Neuer Workflow für
+  Image-SBOMs, Image-Schwachstellen und die tatsächliche Compose-Startkette. Erforderliche Checks müssen zusätzlich in
+  den Repository-Regeln hinterlegt werden. Beide Compose-Profile und die PostgreSQL-/RLS-Suite wurden in CI geprüft.
+- Image-Härtung: aktuelles Python-/Debian-Basisimage, Pillow 13.0.0 und Entfernung des zur Laufzeit unnötigen
+  Python-Installers. Caddy 2.11.7 wird mit Go 1.27.3 und x/net 0.60.0 gebaut. Native Bild-/PDF-/OCR-Prüfung und
+  Validierung beider Caddy-Konfigurationen sichern den Wechsel ab; Schwachstellenberichte werden aufbewahrt.
+- Claude-Arbeitsauftrag und vollständiger Restore-Abnahmeplan unter `docs/security-claude-auftrag.md` und
+  `docs/security-restore-abnahme.md`.
+
 ## [Unveröffentlicht] - Heimserver-Betrieb über VPN
 
 - **Neu:** `docker-compose.home.yml`, `Caddyfile.home` und `.env.home.example` für den Betrieb auf einem eigenen Rechner, erreichbar nur

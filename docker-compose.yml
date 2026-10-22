@@ -5,7 +5,7 @@
 # ist ein Wegwerfwert fuer lokale Entwicklung; wer es aendern will, setzt POSTGRES_PASSWORD in der Shell.
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16@sha256:9e2cf6287f25c3151f4c9421ccce2b17f3e60061c111a29165e0d2cdd9ff0a97
     environment:
       POSTGRES_USER: bilantiq
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bilantiq_dev_only}

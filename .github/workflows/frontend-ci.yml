@@ -1,5 +1,8 @@
 name: frontend-ci
 
+permissions:
+  contents: read
+
 on:
   workflow_dispatch:
   push:
@@ -9,6 +12,7 @@ on:
   pull_request:
     paths:
       - "frontend/**"
+      - ".github/workflows/frontend-ci.yml"
 
 jobs:
   build:
@@ -17,8 +21,8 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
           cache: npm
@@ -28,17 +32,17 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
-  # Rein informativ (blockiert nie): bekannte Schwachstellen laut npm-Registry. Bewertung in docs/lieferkette.md.
+  # High/Critical-Befunde und Scan-Fehler lassen den Job fehlschlagen. Bewertung in docs/lieferkette.md.
   npm-audit:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
-      - name: npm audit (nicht blockierend)
-        continue-on-error: true
+      - name: npm audit (blockierend)
+        shell: bash
         run: npm audit --audit-level=high | tee -a "$GITHUB_STEP_SUMMARY"
