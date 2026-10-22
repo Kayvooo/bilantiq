@@ -16,8 +16,10 @@ Die folgenden älteren Ergebnisse sind historische Momentaufnahmen. Aktuell gilt
 - Restpunkte: Hash-Lock für transitive Python-Pakete, geregelte Digest-Updates der Basisimages und zusätzliche
   Release-/Artefaktsignierung. Neue Scanner ersetzen weder Quellcodeprüfung noch einen vollständigen Restore.
 
-Die neue CI-Konfiguration muss beim ersten Lauf überprüft werden. Die früheren Angaben „nicht blockierend“ unten
-beschreiben ausschließlich den alten Stand.
+Der erste Lauf für `8fb9c4b` bestand bei Python-/npm-Audit, Backend-Suiten und beiden Compose-Profilen. Die neuen
+Image-Schranken stoppten korrekt bei High-/Critical-Befunden. Die Basisimages und betroffenen Bibliotheken werden
+gezielt aktualisiert; Architektur und Abnahme stehen in `specs/security-images.md`. Es gibt keine pauschalen Ausnahmen.
+Die früheren Angaben „nicht blockierend“ unten beschreiben ausschließlich den alten Stand.
 
 Stand: 2026-10-14, Branch `release/abhaengigkeiten`. Frühere Release-Planung, nicht mehr im Repository.
 Alle Angaben stammen aus tatsächlich ausgeführten Läufen; wo etwas nicht geprüft wurde, steht das dabei.

@@ -1,16 +1,19 @@
 # Produktions-Image fuer das Bilantiq-Backend (FastAPI/uvicorn).
-FROM python:3.14-slim-bookworm
+FROM python:3.14.9-slim-trixie
 
 # System-Abhaengigkeiten fuer die lokale Belegerfassung (OCR), siehe README:
 # Tesseract inkl. deutschem Sprachpaket und Poppler fuers PDF-Rendering.
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
         tesseract-ocr tesseract-ocr-deu poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Installer und deren vendorte Bibliotheken werden fuer die unveraenderliche Laufzeit nicht benoetigt.
+RUN pip install --no-cache-dir -r requirements.txt \
+    && python -m pip uninstall --yes pip setuptools \
+    && rm -rf /usr/local/lib/python3.14/ensurepip /root/.cache/pip
 
 COPY . .
 

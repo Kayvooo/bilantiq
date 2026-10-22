@@ -14,7 +14,10 @@ und Datum legt der Owner beim Release fest (Release-Plan 1.9).
   API gemountet. SQL-Parameter werden in Fehlermeldungen der Anwendungs-Engine ausgeblendet.
 - CI-Audits schlagen bei Befunden/Scan-Fehlern fehl, Actions sind auf Commit-SHAs festgelegt. Neuer Workflow für
   Image-SBOMs, Image-Schwachstellen und die tatsächliche Compose-Startkette. Erforderliche Checks müssen zusätzlich in
-  den Repository-Regeln hinterlegt werden. Docker-/Postgres-Abnahme dieser Änderungen steht bis zum CI-Lauf aus.
+  den Repository-Regeln hinterlegt werden. Beide Compose-Profile und die PostgreSQL-/RLS-Suite wurden in CI geprüft.
+- Image-Härtung: aktuelles Python-/Debian-Basisimage, Pillow 13.0.0 und Entfernung des zur Laufzeit unnötigen
+  Python-Installers. Caddy 2.11.7 wird mit Go 1.27.3 und x/net 0.60.0 gebaut. Native Bild-/PDF-/OCR-Prüfung und
+  Validierung beider Caddy-Konfigurationen sichern den Wechsel ab; Schwachstellenberichte werden aufbewahrt.
 - Claude-Arbeitsauftrag und vollständiger Restore-Abnahmeplan unter `docs/security-claude-auftrag.md` und
   `docs/security-restore-abnahme.md`.
 
